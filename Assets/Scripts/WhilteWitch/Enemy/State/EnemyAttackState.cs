@@ -5,7 +5,7 @@ public class EnemyAttackState : EnemyStateBase
     //クラス名と同名のコンストラクタが一番最初に呼ばれるため同名の必要アリ
     //当クラスのインスタンス時に引数として渡されたEnemyStateMachineをbase(親クラス)に更に引数として渡す！
     //親クラスのインスタンス処理が走る
-    public EnemyAttackState(EnemyStateMachine stateMachine) : base(stateMachine)
+    public EnemyAttackState(EnemyController enemy) : base(enemy)
     {
         //stateMachine(管理者)の登録処理はEnemyStateBaseにある
     }

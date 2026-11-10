@@ -33,7 +33,7 @@ public class EnemyStateMachine : MonoBehaviour
         //生成したクラスの引数にエネミーコントローラーを渡すことで、ステータス側がこのステートマシンをコントローラー経由で呼び出せる
         states = new Dictionary<Type, IEnemyState>()
         {
-            { typeof(EnemyExploreState), new EnemyExploreState(enemy) },
+            { typeof(EnemyExploreState), new EnemyExploreState(enemy, enemy.Behavior) },
             { typeof(EnemyChaseState), new EnemyChaseState(enemy) },
             { typeof(EnemyAttackState), new EnemyAttackState(enemy) },
 
