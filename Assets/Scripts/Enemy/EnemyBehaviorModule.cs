@@ -3,7 +3,8 @@ using UnityEngine;
 //行動部門の
 public sealed class EnemyBehaviorModule :
  MonoBehaviour,
- IEnemyExploreContext
+ IEnemyExploreContext,
+ IEnemyChaseContext
 {
     
     public EnemyMovement Movement { get; private set; }

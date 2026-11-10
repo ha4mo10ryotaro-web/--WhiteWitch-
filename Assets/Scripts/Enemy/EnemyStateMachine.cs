@@ -34,7 +34,7 @@ public class EnemyStateMachine : MonoBehaviour
         states = new Dictionary<Type, IEnemyState>()
         {
             { typeof(EnemyExploreState), new EnemyExploreState(enemy, enemy.Behavior) },
-            { typeof(EnemyChaseState), new EnemyChaseState(enemy) },
+            { typeof(EnemyChaseState), new EnemyChaseState(enemy, enemy.Behavior) },
             { typeof(EnemyAttackState), new EnemyAttackState(enemy) },
 
             { typeof(EnemyReturnState), new EnemyReturnState(enemy) },
