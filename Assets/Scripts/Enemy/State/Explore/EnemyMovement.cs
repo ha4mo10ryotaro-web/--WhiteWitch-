@@ -62,7 +62,25 @@ public class EnemyMovement : MonoBehaviour
 
     }
 
+    // NavMesh上の有効な点を取得する
+    public bool TryGetNavMeshPoint(
+        Vector3 candidate,
+        float sampleDistance,
+        out Vector3 result)
+    {
+        if (NavMesh.SamplePosition(
+            candidate,
+            out NavMeshHit hit,
+            sampleDistance,
+            NavMesh.AllAreas))
+        {
+            result = hit.position;
+            return true;
+        }
 
+        result = candidate;
+        return false;
+    }
 
 
 //目的地探索用。後で探索専用クラスのみ扱えるように分離する。
@@ -90,9 +108,11 @@ public class EnemyMovement : MonoBehaviour
                 );
 
             //NavMesh上の有効な点を取得
-            if(NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, sampleDistance, NavMesh.AllAreas))
+            if (TryGetNavMeshPoint(
+                randomPoint,
+                sampleDistance,
+                out point))
             {
-                point = hit.position;
                 return true;
             }
         }
