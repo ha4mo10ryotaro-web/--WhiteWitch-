@@ -31,7 +31,7 @@ public class EnemyExploreState : EnemyStateBase
     {
         Debug.Log("探索状態に入りました");
 
-        explorePointCenter = enemy.transform.position;
+        explorePointCenter = enemy.SpawnPos;
         isWaiting = false;
         waitTimer = 0f;
 

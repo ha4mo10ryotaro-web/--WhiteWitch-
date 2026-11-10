@@ -10,6 +10,7 @@ public sealed class EnemyController : MonoBehaviour
 
     public EnemyStateMachine StateMachine { get; private set; }
 
+
     //敵の行動部門。遅延取得させる
     private EnemyBehaviorModule behaviour;
     public EnemyBehaviorModule Behavior { get
@@ -23,6 +24,8 @@ public sealed class EnemyController : MonoBehaviour
     public EnemyReactionModule Reaction { get; private set; }
     public EnemyStatusModule Status { get; private set; }
     
+    public Vector3 SpawnPos{ get; private set; }
+    public Vector3 CurrentPos => transform.position;
 
     private void Awake()
     {
@@ -30,5 +33,6 @@ public sealed class EnemyController : MonoBehaviour
 
         Reaction = GetComponent<EnemyReactionModule>();    
         Status = GetComponent<EnemyStatusModule>();
+        SpawnPos = transform.position;
     }
 }
