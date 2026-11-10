@@ -7,7 +7,16 @@ public sealed class EnemyController : MonoBehaviour
 
     public EnemyStateMachine StateMachine { get; private set; }
 
-    public EnemyBehaviorModule Behavior { get; private set; }
+    //敵の行動部門。遅延取得させる
+    private EnemyBehaviorModule behaviour;
+    public EnemyBehaviorModule Behavior { get
+        {
+            if(behaviour == null)
+            {
+                behaviour = GetComponent<EnemyBehaviorModule>();
+            }
+            return behaviour;
+        }}
     public EnemyReactionModule Reaction { get; private set; }
     public EnemyStatusModule Status { get; private set; }
     
@@ -16,7 +25,6 @@ public sealed class EnemyController : MonoBehaviour
     {
         StateMachine = GetComponent<EnemyStateMachine>();
 
-        Behavior = GetComponent<EnemyBehaviorModule>();
         Reaction = GetComponent<EnemyReactionModule>();    
         Status = GetComponent<EnemyStatusModule>();
     }
