@@ -42,13 +42,13 @@ public class EnemyExploreState : EnemyStateBase
 
     public override void Update()
     {
-        /*検知スクリプト君がプレイヤーを見つけたら(CanSeePlayer(仮))追跡状態に切り替える
-        if (context.Perception.CanSeePlayer)
+        //検知スクリプト君がプレイヤーを見つけたら追跡状態に切り替える
+        if (context.Perception.CanSee(enemy.Target))
         {
             enemy.StateMachine.SwitchState<EnemyChaseState>();
             return;
         }
-        */
+        
         
 
         if(isWaiting)
@@ -88,7 +88,7 @@ public class EnemyExploreState : EnemyStateBase
     {
         waitTimer -= Time.deltaTime;
 
-        if(waitTimer <= 0f)
+        if(waitTimer > 0f)
         {
             return;
         }

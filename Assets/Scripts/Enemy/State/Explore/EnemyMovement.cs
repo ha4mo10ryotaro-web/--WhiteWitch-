@@ -77,8 +77,17 @@ public class EnemyMovement : MonoBehaviour
 
         for(int tmp = 0; tmp < maxAttempt; tmp++)
         {
+
             //中心点から半径内のランダムな点を生成
-            Vector3 randomPoint = center + UnityEngine.Random.insideUnitSphere * radius;
+            Vector2 randomCircle =
+                Random.insideUnitCircle * radius;
+
+            Vector3 randomPoint =
+                center + new Vector3(
+                    randomCircle.x,
+                    0f,
+                    randomCircle.y
+                );
 
             //NavMesh上の有効な点を取得
             if(NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, sampleDistance, NavMesh.AllAreas))
