@@ -205,13 +205,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.44, y: 0.13999999, z: -6.91488}
+  m_LocalRotation: {x: 0.103313334, y: 0, z: 0, w: 0.9946489}
+  m_LocalPosition: {x: 0.44, y: 3.83, z: -14.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1602382725}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 11.86, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,6 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e48247dcac53284d9a82fb54c43689b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
+  attackRange: 2
 --- !u!114 &668206191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -901,7 +902,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.14102, y: -0.82, z: -2.65137}
-  m_LocalScale: {x: 13.09, y: 1, z: 13.09}
+  m_LocalScale: {x: 40, y: 1, z: 40}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -936,7 +937,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 6912ea263837c9f469f753de50dc2084, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: e3fb6e322153a014c9a859373eaf6e51, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &1602382721
 GameObject:

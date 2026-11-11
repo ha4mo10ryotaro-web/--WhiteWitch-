@@ -11,7 +11,7 @@ public class EnemyReturnState : EnemyStateBase
     //override……親クラス側でabstractで丸投げされてた中身の処理を上書きするよ！
     public override void Enter()
     {
-            Debug.Log("探索状態に入りました");
+            Debug.Log("帰還状態に入りました");
     }
 
 

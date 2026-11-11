@@ -238,7 +238,41 @@ public class EnemyChaseState : EnemyStateBase
     }
     private void UpdateStayingLastPos()
     {
-        
+        //追跡対象が追跡半径内に戻り、かつ視認できれば追跡続行
+        if(IsTargetInChaseRadius() &&
+            context.Perception.CanSee(enemy.Target))
+        {
+            EnterChasingPhase();
+            return;
+        }
+
+          //最終捕捉地点に到着するまでタイマーは動かない
+        if(!hasReachedLastSeenPosition)
+        {
+            if(!context.Movement.HasArrived)
+            {
+                return;
+            }
+            
+            //最終捕捉地点に到着した
+            context.Movement.Stop();
+
+            hasReachedLastSeenPosition = true;
+            searchWaitingTimer = searchWaitingTime;
+
+            Debug.Log($"{enemy.name}: 最終捕捉地点に到着しました。{searchWaitingTime}秒間待機します");
+            return;
+        }
+
+        searchWaitingTimer -= Time.deltaTime;
+
+        if(searchWaitingTimer > 0f)
+        {
+            return;
+        }   
+
+        Debug.Log($"{enemy.name}: 待機が終了。追跡を終了し、ナワバリに帰還します");
+        SwitchToReturn();
     }
 
 
