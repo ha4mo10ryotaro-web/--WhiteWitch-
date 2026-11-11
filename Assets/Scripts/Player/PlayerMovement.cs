@@ -1,29 +1,39 @@
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+[RequireComponent(typeof(CharacterController))]
+public sealed class PlayerMovement : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    //仮置き。本実装時はステータスから読み込ませる。
+    [SerializeField]
+    private float moveSpeed = 5f;
+
+    private CharacterController characterController;
+    private PlayerInputReader inputReader;
+
+    private void Awake()
     {
-        
+        characterController = GetComponent<CharacterController>();
+        inputReader = GetComponent<PlayerInputReader>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
+        Vector2 input = inputReader.MoveInput;
 
+        Vector3 moveDir = new Vector3(
+            input.x,
+            0f,
+            input.y
+        );
 
-    }
+        //1以上のベクトルにならないように制限
+        if (moveDir.sqrMagnitude > 1f)
+        {
+            moveDir.Normalize();
+        }
 
-    void FixedUpdate()
-    {
-        //プレイヤーの移動処理
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-
-        Vector3 movement = new Vector3(horizontalInput, 0f, verticalInput);
-        transform.Translate(movement * Time.fixedDeltaTime * 5f);
+        characterController.Move(
+            moveDir * moveSpeed * Time.deltaTime
+        );
     }
 }
