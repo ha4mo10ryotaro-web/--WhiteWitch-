@@ -8,6 +8,7 @@ public class PlayerInputReader : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         MoveInput = context.ReadValue<Vector2>();
+        Debug.Log($"Move Input:{MoveInput}");
     }
 
 }
