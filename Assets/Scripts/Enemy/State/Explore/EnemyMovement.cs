@@ -17,6 +17,11 @@ public class EnemyMovement : MonoBehaviour
         {
             if (!agent.isOnNavMesh || agent.isStopped)
                 return false;
+
+            //移動経路計算中は到着判定にしない
+            if(agent.pathPending)
+                return false;
+            //移動経路を持ってない(移動完了)
             if(!agent.hasPath)
                 return true;
 
@@ -62,14 +67,14 @@ public class EnemyMovement : MonoBehaviour
 
     }
 
-    // NavMesh上の有効な点を取得する
+    // tempPosを中心としたsampleDistanceの範囲内でのNavMesh上の有効な点を取得する
     public bool TryGetNavMeshPoint(
-        Vector3 candidate,
+        Vector3 tempPos,
         float sampleDistance,
         out Vector3 result)
     {
         if (NavMesh.SamplePosition(
-            candidate,
+            tempPos,
             out NavMeshHit hit,
             sampleDistance,
             NavMesh.AllAreas))
@@ -78,7 +83,7 @@ public class EnemyMovement : MonoBehaviour
             return true;
         }
 
-        result = candidate;
+        result = tempPos;
         return false;
     }
 
