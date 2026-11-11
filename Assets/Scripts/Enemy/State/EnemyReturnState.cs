@@ -1,35 +1,91 @@
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 public class EnemyReturnState : EnemyStateBase
 {
-    public EnemyReturnState(EnemyController enemy) : base(enemy)
+    public readonly IEnemyReturnContext context;
+    public EnemyReturnState(
+        EnemyController enemy, IEnemyReturnContext context)
+         : base(enemy)
     {
-        //stateMachine(管理者)の登録処理はEnemyStateBaseにある
+        this.context = context;
     }
 
+    //SpawnPos周辺のNavMeshを探索する範囲
+    private const float ReturnSampleDistance = 2.0f;
+    private Vector3 returnPos;
+    //帰還地点に到着した？
+    private bool hasReturnPos = false;
 
-    //override……親クラス側でabstractで丸投げされてた中身の処理を上書きするよ！
+    //再試行
+    private const float RetryInterval = 1.0f;
+    private float retryTimer = 0f;
+
     public override void Enter()
     {
-            Debug.Log("帰還状態に入りました");
+        hasReturnPos = false;
+        //初回は再試行インターバル無し
+        retryTimer = 0f;
+
+        Debug.Log("帰還状態に入りました");
+
+        TryStartReturning();
     }
 
 
     public override void Update()
     {
-        /*
-        if(プレイヤー発見処理)
+        //経路が見当たらなければ再試行、到着すれば帰還完了
+        if(!hasReturnPos)
         {
-            stateMachine.SwitchState(typeof(EnemyChaseState));
+            UpdateRetryingReturnPath();
+            return;
         }
-        */
+        if(!context.Movement.HasArrived)
+        {
+            return;
+        }
+
+        context.Movement.Stop();
+        Debug.Log(
+            $"{enemy.name}:帰還地点到着。探索状態へ戻ります"
+        );
+
+        enemy.StateMachine.SwitchState<EnemyExploreState>();
     }
-
-
     public override void Exit()
     {
-
-
+        context.Movement.Stop();
     }
 
+    private void TryStartReturning()
+    {
+        if(!context.Movement.TryGetReachablePos(
+                enemy.SpawnPos,
+                ReturnSampleDistance,
+                out returnPos
+        ))
+        {
+            Debug.LogWarning($"{enemy.name}:帰還地点への有効な経路を取得できませんでした。");
+            return;
+        }
+
+        hasReturnPos = true;
+        context.Movement.MoveTo(returnPos);
+
+        Debug.Log($"{enemy.name}:帰還地点{returnPos}に向かいます");
+    }
+
+    private void UpdateRetryingReturnPath()
+    {
+        retryTimer -= Time.deltaTime;
+
+        if(retryTimer > 0f)
+        {
+            return;
+        }
+        //インターバルを過ぎればタイマーリセット、再試行
+        retryTimer = RetryInterval;
+        TryStartReturning();
+    }
 }

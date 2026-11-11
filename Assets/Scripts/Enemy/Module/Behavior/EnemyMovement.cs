@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -86,6 +87,53 @@ public class EnemyMovement : MonoBehaviour
         result = tempPos;
         return false;
     }
+
+//指定地点まで到達可能かどうかを調べる
+    public bool TryGetReachablePos(
+        Vector3 tempPos,
+        float sampleDistance,
+        out Vector3 result
+    )
+    {
+
+        result = default;
+
+        if(!agent.isOnNavMesh)
+        {
+            Debug.LogWarning($"{name}:NavMesh上にいないため、経路を確認できません。");
+            return false;
+        }
+
+        if(!NavMesh.SamplePosition(
+            tempPos,
+            out NavMeshHit hit,
+            sampleDistance,
+            NavMesh.AllAreas
+        ))
+        {
+            Debug.Log($"{name}:指定された場所{tempPos}の周囲でNavMeshを取得できませんでした。");
+            return false;
+        }
+
+        NavMeshPath path = new NavMeshPath();
+
+        if(!agent.CalculatePath(hit.position, path))
+        {
+            Debug.Log($"{name}:帰還経路が見当たりませんでした。");
+            return false;
+        }
+
+        if(path.status != NavMeshPathStatus.PathComplete)
+        {
+            Debug.Log($"{name}:指定された場所{tempPos}に到達できません。PathStatus = {path.status}");
+            return false;
+        }
+
+        result = hit.position;
+        return true;
+    }
+
+
 
 
 //目的地探索用。後で探索専用クラスのみ扱えるように分離する。
