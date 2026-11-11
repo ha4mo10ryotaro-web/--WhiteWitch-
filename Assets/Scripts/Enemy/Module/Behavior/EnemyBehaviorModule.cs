@@ -4,7 +4,8 @@ using UnityEngine;
 public sealed class EnemyBehaviorModule :
  MonoBehaviour,
  IEnemyExploreContext,
- IEnemyChaseContext
+ IEnemyChaseContext,
+ IEnemyReturnContext
 {
     
     public EnemyMovement Movement { get; private set; }
