@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.AI;
@@ -49,6 +50,13 @@ public class EnemyReturnState : EnemyStateBase
 
     public override void Update()
     {
+        //再捕捉できれば追跡再開
+        if(CanRestartChase())
+        {
+            RestartChase();
+            return;
+        }
+
         //経路が見当たらなければ再試行、到着すれば帰還完了
         if(!hasReturnPath)
         {
@@ -68,6 +76,24 @@ public class EnemyReturnState : EnemyStateBase
         context.Movement.Stop();
     }
 
+    private bool CanRestartChase()
+    {
+        if(enemy.Target == null)
+        {
+            return false;
+        }
+
+        return context.Perception.CanSee(enemy.Target);
+
+    }
+    private void RestartChase()
+    {
+        context.Movement.Stop();
+
+        Debug.Log($"{enemy.name}:期間中に追跡対象を再捕捉。追跡を再開します");
+
+        enemy.StateMachine.SwitchState<EnemyChaseState>();
+    }
     private void TryStartReturning()
     {
         if(!context.Movement.TryGetBestReachablePos(
