@@ -67,7 +67,7 @@ public class EnemyAttackState : EnemyStateBase
         currentPhase = AttackPhase.Startup;
         phaseTimer = startupTime;
 
-        Debug.Log($"{enemy.name}:前隙開始。{activeTime}秒");
+        Debug.Log($"{enemy.name}:前隙開始。{startupTime}秒");
     }
     private void EnterActivePhase()
     {
@@ -81,12 +81,11 @@ public class EnemyAttackState : EnemyStateBase
         currentPhase = AttackPhase.Recovery;
         phaseTimer = recoveryTime;
 
-        Debug.Log($"{enemy.name}:攻撃判定終了、後隙開始。{activeTime}秒");
+        Debug.Log($"{enemy.name}:攻撃判定終了、後隙開始。{recoveryTime}秒");
     }
     private void CompleteAttack()
     {
-        Debug.Log($"{enemy.name}:攻撃判定開始。{activeTime}秒");
-
+        Debug.Log($"{enemy.name}:攻撃終了。追跡状態に戻ります");
         enemy.StateMachine.SwitchState<EnemyChaseState>();
     
     }
