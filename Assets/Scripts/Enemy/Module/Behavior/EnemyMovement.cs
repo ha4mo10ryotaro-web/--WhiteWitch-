@@ -242,4 +242,14 @@ public class EnemyMovement : MonoBehaviour
         return false;
     }
 
+//帰還不能テスト用。本実装時は消す
+    public void DebugWarp(Vector3 position)
+    {
+        if (!agent.isOnNavMesh)
+        {
+            return;
+        }
+
+        agent.Warp(position);
+}
 }

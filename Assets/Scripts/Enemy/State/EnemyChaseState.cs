@@ -53,6 +53,11 @@ public class EnemyChaseState : EnemyStateBase
             {
                 lastSeenPosition = enemy.Target.position; 
             }
+
+            
+            Vector3 warpPos = new Vector3(-17f,0.3f,-6.5f);
+            //デバッグ用。好きな座標にワープさせる
+            context.Movement.DebugWarp(warpPos);
     }
 
 
