@@ -132,14 +132,12 @@ public class EnemyChaseState : EnemyStateBase
         lastSeenPosition =
             enemy.Target.position;
 
-        /*Combat実装後に解放
         if(context.Combat.IsInAttackRange(enemy.Target))
         {
             enemy.StateMachine.SwitchState<EnemyAttackState>();
 
             return;
         }
-        */
 
         //追跡対象が追跡半径外に出た場合、追跡をやめる
         if(!IsTargetInChaseRadius())
