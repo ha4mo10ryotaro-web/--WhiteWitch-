@@ -28,7 +28,7 @@ public class EnemyAttackState : EnemyStateBase
     public override void Enter()
     {
         context.Movement.Stop();
-        currentPhase = AttackPhase.Startup;
+        EnterStartupPhase();
         Debug.Log($"{enemy.name}:戦闘状態に入りました");
     }
 
@@ -62,6 +62,13 @@ public class EnemyAttackState : EnemyStateBase
         phaseTimer = 0f;
     }
 
+    private void EnterStartupPhase()
+    {
+        currentPhase = AttackPhase.Startup;
+        phaseTimer = startupTime;
+
+        Debug.Log($"{enemy.name}:前隙開始。{activeTime}秒");
+    }
     private void EnterActivePhase()
     {
         currentPhase = AttackPhase.Active;
