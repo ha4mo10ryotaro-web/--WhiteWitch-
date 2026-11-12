@@ -1,4 +1,6 @@
+using System.IO;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyReturnState : EnemyStateBase
 {
@@ -68,11 +70,11 @@ public class EnemyReturnState : EnemyStateBase
 
     private void TryStartReturning()
     {
-        if(!context.Movement.TryGetReachablePos(
+        if(!context.Movement.TryGetBestReachablePos(
                 enemy.SpawnPos,
                 ReturnSampleDistance,
-                out returnPos
-        ))
+                out returnPos,
+                out NavMeshPathStatus pathStatus))
         {
             hasReturnPath = false;
 
@@ -82,11 +84,26 @@ public class EnemyReturnState : EnemyStateBase
                 hasLoggedReturnFailure = true;
 
                 Debug.LogWarning(
-                    $"{enemy.name}:帰還地点への有効な経路を取得できませんでした。"+
+                    $"{enemy.name}:PathStatus = {pathStatus},帰還地点への有効な経路を取得できませんでした。"+
                      "経路取得の再試行を開始します");
             }
 
             return;
+        }
+
+        switch (pathStatus)
+        {
+            case NavMeshPathStatus.PathComplete:
+                StartCompleteReturn();
+                break;
+            case NavMeshPathStatus.PathPartial:
+                StartPartialReturn();
+                break;
+            
+            case NavMeshPathStatus.PathInvalid:
+            default:
+                hasReturnPath = false;
+                break;
         }
 
         //経路はある。が、移動できない
@@ -103,12 +120,14 @@ public class EnemyReturnState : EnemyStateBase
                     "経路の再試行を開始します");
 
             }
-
-            return;
         }
+            return;
+    }
 
+    //経路があって帰還もできる
+    private void StartCompleteReturn()
+    {
 
-    //経路があって移動もできる
         //元々帰還不能に陥っていたか
         bool wasUnableToReturn = returnFailureTimer > 0f;
         //諸々リセット
@@ -130,6 +149,26 @@ public class EnemyReturnState : EnemyStateBase
         Debug.Log($"{enemy.name}:帰還地点{returnPos}へ向かいます");
 
     }
+    //途中までしか戻れない
+    private void StartPartialReturn()
+    {
+        hasReturnPath = false;
+
+        if (!context.Movement.MoveTo(returnPos))
+        {
+            return;
+        }
+
+        if (!hasLoggedReturnFailure)
+        {
+            hasLoggedReturnFailure = true;
+
+            Debug.LogWarning(
+                $"{enemy.name}: SpawnPosまでの完全な帰還経路がありません。" +
+                $"到達可能な最奥地点{returnPos}まで帰還を試みます");
+        }        
+    }
+
 
     private void UpdateRetryingReturnPath()
     {

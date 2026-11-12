@@ -144,7 +144,7 @@ public class EnemyMovement : MonoBehaviour
                 reachablePos = sampledPos;
                 return true;
             
-            case NavMeshPathStatus.PathInvalid:
+            case NavMeshPathStatus.PathPartial:
                 if(path.corners.Length == 0)
                 {
                     //行き場所無し！
@@ -157,7 +157,7 @@ public class EnemyMovement : MonoBehaviour
                 return true;
 
             //同じ処理なのでreturnやbreak無しでも構わない
-            case NavMeshPathStatus.PathPartial:
+            case NavMeshPathStatus.PathInvalid:
             default:
                 return false;
         }
