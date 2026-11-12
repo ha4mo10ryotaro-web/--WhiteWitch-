@@ -1,5 +1,3 @@
-using UnityEngine;
-
 //インターフェース側で３つの処理の実装を継承した全クラスに強制させる
 public interface IEnemyState
 {

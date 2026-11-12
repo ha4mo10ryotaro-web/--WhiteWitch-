@@ -1,13 +1,19 @@
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 public class EnemyAttackState : EnemyStateBase
 {
+    private readonly IEnemyAttackContext context;
+    
     //クラス名と同名のコンストラクタが一番最初に呼ばれるため同名の必要アリ
     //当クラスのインスタンス時に引数として渡されたEnemyStateMachineをbase(親クラス)に更に引数として渡す！
     //親クラスのインスタンス処理が走る
-    public EnemyAttackState(EnemyController enemy) : base(enemy)
+    public EnemyAttackState(
+        EnemyController enemy,
+        IEnemyAttackContext context) 
+        : base(enemy)
     {
-        //stateMachine(管理者)の登録処理はEnemyStateBaseにある
+        this.context = context;
     }
 
 

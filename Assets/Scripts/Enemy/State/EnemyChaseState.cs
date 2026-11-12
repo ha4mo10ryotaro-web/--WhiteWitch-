@@ -26,7 +26,7 @@ public class EnemyChaseState : EnemyStateBase
     private bool hasReachedBorder = false;
     private bool hasReachedSearchPosition = false;
 
-    private IEnemyChaseContext context;
+    private readonly IEnemyChaseContext context;
     public EnemyChaseState(
         EnemyController enemy,
         IEnemyChaseContext context) : base(enemy)

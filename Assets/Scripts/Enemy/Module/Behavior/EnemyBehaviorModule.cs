@@ -5,7 +5,8 @@ public sealed class EnemyBehaviorModule :
  MonoBehaviour,
  IEnemyExploreContext,
  IEnemyChaseContext,
- IEnemyReturnContext
+ IEnemyReturnContext,
+ IEnemyAttackContext
 {
     
     public EnemyMovement Movement { get; private set; }
