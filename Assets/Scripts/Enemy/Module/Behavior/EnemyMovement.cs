@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -96,7 +95,85 @@ public class EnemyMovement : MonoBehaviour
     )
     {
 
-        result = default;
+        result = tempPos;
+
+       if(!TryCalcPath(
+        tempPos,
+        sampleDistance,
+        out NavMeshPath path,
+        out Vector3 sampledPos
+       ))
+        {
+            return false;
+        }
+
+        if(path.status != NavMeshPathStatus.PathComplete)
+        {
+            return false;
+        }
+
+        result = sampledPos;
+        return true;
+    }
+
+    public bool TryGetBestReachablePos(
+        Vector3 targetPos,
+        float sampleDistance,
+        out Vector3 reachablePos,
+        out NavMeshPathStatus pathStatus)
+    {
+        
+        reachablePos = targetPos;
+        pathStatus = NavMeshPathStatus.PathInvalid;
+
+        if(!TryCalcPath(
+            targetPos,
+            sampleDistance,
+            out NavMeshPath path,
+            out Vector3 sampledPos
+       ))
+        {
+            return false;
+        }
+
+        pathStatus = path.status;
+
+        switch(pathStatus)
+        {
+            case NavMeshPathStatus.PathComplete:
+                reachablePos = sampledPos;
+                return true;
+            
+            case NavMeshPathStatus.PathInvalid:
+                if(path.corners.Length == 0)
+                {
+                    //行き場所無し！
+                    return false;
+                }
+
+                //部分経路で到達可能な最奥地点を取得する
+                reachablePos =
+                    path.corners[path.corners.Length - 1];
+                return true;
+
+            //同じ処理なのでreturnやbreak無しでも構わない
+            case NavMeshPathStatus.PathPartial:
+            default:
+                return false;
+        }
+    }
+
+
+    //経路計算用処理
+    private bool TryCalcPath(
+        Vector3 targetPos,
+        float sampleDistance,
+        out NavMeshPath path,
+        out Vector3 sampledPos
+    )
+    {
+        path = new NavMeshPath();
+        sampledPos = targetPos;
 
         if(!agent.isOnNavMesh)
         {
@@ -105,35 +182,26 @@ public class EnemyMovement : MonoBehaviour
         }
 
         if(!NavMesh.SamplePosition(
-            tempPos,
+            targetPos,
             out NavMeshHit hit,
             sampleDistance,
-            NavMesh.AllAreas
-        ))
+            NavMesh.AllAreas))
+            {
+                Debug.Log($"{name}:指定された場所{targetPos}の周囲でNavMeshを取得できませんでした。");
+                return false;
+            }
+
+        sampledPos = hit.position;
+
+        if(!agent.CalculatePath(sampledPos, path))
         {
-            Debug.Log($"{name}:指定された場所{tempPos}の周囲でNavMeshを取得できませんでした。");
+            Debug.Log($"{name}:指定地点への経路が見当たりませんでした。");
             return false;
         }
 
-        NavMeshPath path = new NavMeshPath();
-
-        if(!agent.CalculatePath(hit.position, path))
-        {
-            Debug.Log($"{name}:帰還経路が見当たりませんでした。");
-            return false;
-        }
-
-        if(path.status != NavMeshPathStatus.PathComplete)
-        {
-            Debug.Log($"{name}:指定された場所{tempPos}に到達できません。PathStatus = {path.status}");
-            return false;
-        }
-
-        result = hit.position;
         return true;
+
     }
-
-
 
 
 //目的地探索用。後で探索専用クラスのみ扱えるように分離する。

@@ -1,4 +1,3 @@
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 public class EnemyReturnState : EnemyStateBase
@@ -14,18 +13,31 @@ public class EnemyReturnState : EnemyStateBase
     //SpawnPos周辺のNavMeshを探索する範囲
     private const float ReturnSampleDistance = 2.0f;
     private Vector3 returnPos;
-    //帰還地点に到着した？
-    private bool hasReturnPos = false;
+    //帰還経路、ある？
+    private bool hasReturnPath = false;
 
     //再試行
     private const float RetryInterval = 1.0f;
     private float retryTimer = 0f;
+    //帰還不能判定
+    private const float ReturnFailureTimeout = 10.0f;//10秒はプロトタイプ版の仮値とする
+    private float returnFailureTimer = 0f;
+
+    //ログ管理用フラグ
+    private bool hasLoggedReturnFailure;
+    private bool hasReachedFailureTimeout;
 
     public override void Enter()
     {
-        hasReturnPos = false;
+        hasReturnPath = false;
         //初回は再試行インターバル無し
         retryTimer = 0f;
+
+        returnFailureTimer = 0f;
+        hasLoggedReturnFailure = false;
+        hasReachedFailureTimeout = false;
+
+        context.Movement.Stop ();
 
         Debug.Log("帰還状態に入りました");
 
@@ -36,7 +48,7 @@ public class EnemyReturnState : EnemyStateBase
     public override void Update()
     {
         //経路が見当たらなければ再試行、到着すれば帰還完了
-        if(!hasReturnPos)
+        if(!hasReturnPath)
         {
             UpdateRetryingReturnPath();
             return;
@@ -46,12 +58,8 @@ public class EnemyReturnState : EnemyStateBase
             return;
         }
 
-        context.Movement.Stop();
-        Debug.Log(
-            $"{enemy.name}:帰還地点到着。探索状態へ戻ります"
-        );
+        CompleteReturn();
 
-        enemy.StateMachine.SwitchState<EnemyExploreState>();
     }
     public override void Exit()
     {
@@ -66,19 +74,78 @@ public class EnemyReturnState : EnemyStateBase
                 out returnPos
         ))
         {
-            Debug.LogWarning($"{enemy.name}:帰還地点への有効な経路を取得できませんでした。");
+            hasReturnPath = false;
+
+            //再試行の一連の流れの中で、警告文を出すのは最初だけ
+            if(!hasLoggedReturnFailure)
+            {
+                hasLoggedReturnFailure = true;
+
+                Debug.LogWarning(
+                    $"{enemy.name}:帰還地点への有効な経路を取得できませんでした。"+
+                     "経路取得の再試行を開始します");
+            }
+
             return;
         }
 
-        hasReturnPos = true;
-        context.Movement.MoveTo(returnPos);
+        //経路はある。が、移動できない
+        if(!context.Movement.MoveTo(returnPos))
+        {
+            hasReturnPath = false;
 
-        Debug.Log($"{enemy.name}:帰還地点{returnPos}に向かいます");
+            if(!hasLoggedReturnFailure)
+            {
+                hasLoggedReturnFailure = true;
+
+                Debug.LogWarning(
+                    $"{enemy.name}: 帰還地点への移動を開始できません。"+
+                    "経路の再試行を開始します");
+
+            }
+
+            return;
+        }
+
+
+    //経路があって移動もできる
+        //元々帰還不能に陥っていたか
+        bool wasUnableToReturn = returnFailureTimer > 0f;
+        //諸々リセット
+        hasReturnPath = true;
+        retryTimer = 0f;
+        returnFailureTimer = 0f;
+        hasLoggedReturnFailure = false;
+        hasReachedFailureTimeout = false;
+
+        if(wasUnableToReturn)
+        {
+            Debug.Log(
+                $"{enemy.name}:帰還経路を再取得しました。"+
+                $"帰還地点{returnPos}へ向かいます");
+
+            return;
+        }
+
+        Debug.Log($"{enemy.name}:帰還地点{returnPos}へ向かいます");
+
     }
 
     private void UpdateRetryingReturnPath()
     {
         retryTimer -= Time.deltaTime;
+        returnFailureTimer += Time.deltaTime;
+
+        //帰還不能状態が続いたらタイムアウト
+        if(!hasReachedFailureTimeout && returnFailureTimer >= ReturnFailureTimeout)
+        {
+            hasReachedFailureTimeout = true;
+            Debug.LogWarning(
+                $"{enemy.name}:帰還不能状態が{ReturnFailureTimeout}秒以上継続しました" +
+                "Despawn候補として扱います"
+            );
+        }
+
 
         if(retryTimer > 0f)
         {
@@ -88,4 +155,15 @@ public class EnemyReturnState : EnemyStateBase
         retryTimer = RetryInterval;
         TryStartReturning();
     }
+
+    private void CompleteReturn()
+    {
+        context.Movement.Stop();
+        Debug.Log(
+            $"{enemy.name}:帰還地点到着。探索状態へ戻ります"
+        );
+
+        enemy.StateMachine.SwitchState<EnemyExploreState>();
+    }
+
 }

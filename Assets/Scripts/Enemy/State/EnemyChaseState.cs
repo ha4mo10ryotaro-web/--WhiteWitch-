@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyChaseState : EnemyStateBase
 {
@@ -13,7 +14,7 @@ public class EnemyChaseState : EnemyStateBase
         private readonly float chaseRadius = 15f;
         //境界線の場所をNavMesh上でサンプリングする範囲。
         //半径内のNavMesh上に有効な位置がない場合は、境界線の場所を決定できない
-        private readonly float borderSampleDistance = 2f;
+        private readonly float navMeshSampleDistance = 2f;
         private readonly float borderWaitingTime = 3f;
         //追跡が外れてから、最後に見た位置で待機する時間
         private readonly float searchWaitingTime = 5f;
@@ -23,7 +24,7 @@ public class EnemyChaseState : EnemyStateBase
     private float borderWaitingTimer = 0f;
     private float searchWaitingTimer = 0f;
     private bool hasReachedBorder = false;
-    private bool hasReachedLastSeenPosition = false;
+    private bool hasReachedSearchPosition = false;
 
     private IEnemyChaseContext context;
     public EnemyChaseState(
@@ -45,7 +46,7 @@ public class EnemyChaseState : EnemyStateBase
             searchWaitingTimer = 0f;
 
             hasReachedBorder = false;
-            hasReachedLastSeenPosition = false;
+            hasReachedSearchPosition = false;
 
             //最後に敵を視認した位置の初期化。前見た位置に引っ張られないように。
             if(enemy.Target != null)
@@ -86,7 +87,7 @@ public class EnemyChaseState : EnemyStateBase
         searchWaitingTimer = 0f;
 
         hasReachedBorder = false;
-        hasReachedLastSeenPosition = false;
+        hasReachedSearchPosition = false;
     }
 
 
@@ -96,7 +97,7 @@ public class EnemyChaseState : EnemyStateBase
         currentPhase = ChasePhase.Chasing;
 
         hasReachedBorder = false;
-        hasReachedLastSeenPosition = false;
+        hasReachedSearchPosition = false;
 
         borderWaitingTimer = 0f;
         searchWaitingTimer = 0f;
@@ -221,20 +222,63 @@ public class EnemyChaseState : EnemyStateBase
     {
         currentPhase = ChasePhase.StayingLastPos;
 
-        hasReachedLastSeenPosition = false;
+        hasReachedSearchPosition = false;
         searchWaitingTimer = 0f;
 
-        //最後に見た位置に向かう
-        if(!context.Movement.MoveTo(
-            lastSeenPosition
-        ))
+        // 最終捕捉地点へ向かう経路上で、
+        // Enemyが実際に到達可能な最奥地点を取得する
+        if (!context.Movement.TryGetBestReachablePos(
+            lastSeenPosition,
+            navMeshSampleDistance,
+            out Vector3 searchPosition,
+            out NavMeshPathStatus pathStatus))
         {
-            Debug.LogError($"{enemy.name}: 最後に見た位置への移動に失敗しました");
+            // 有効な経路そのものが取得できない場合は、
+            // 永久Chaseを避けるため現在位置で捜索を開始する
+            context.Movement.Stop();
+
+            hasReachedSearchPosition = true;
+            searchWaitingTimer = searchWaitingTime;
+
+            Debug.Log(
+                $"{enemy.name}: 最終捕捉地点への経路を取得できません。" +
+                $"現在位置で{searchWaitingTime}秒間捜索します");
+
             return;
         }
 
-        Debug.Log($"{enemy.name}: " + 
-            $"追跡対象を見失ったため、最後に見た位置{lastSeenPosition}に向かいます");
+        // 完全経路なら最終捕捉地点、
+        // 部分経路なら到達可能な最奥地点へ向かう
+        if (!context.Movement.MoveTo(searchPosition))
+        {
+            // 移動開始自体に失敗した場合も、
+            // 現在位置から捜索へ移行する
+            context.Movement.Stop();
+
+            hasReachedSearchPosition = true;
+            searchWaitingTimer = searchWaitingTime;
+
+            Debug.Log(
+                $"{enemy.name}: 捜索地点への移動を開始できません。" +
+                $"現在位置で{searchWaitingTime}秒間捜索します");
+
+            return;
+        }
+
+        switch (pathStatus)
+        {
+            case NavMeshPathStatus.PathComplete:
+                Debug.Log(
+                    $"{enemy.name}: 追跡対象を見失ったため、" +
+                    $"最終捕捉地点{searchPosition}へ向かいます");
+                break;
+
+            case NavMeshPathStatus.PathPartial:
+                Debug.Log(
+                    $"{enemy.name}: 最終捕捉地点までは到達できません。" +
+                    $"到達可能な最奥地点{searchPosition}まで捜索に向かいます");
+                break;
+        }
     }
     private void UpdateStayingLastPos()
     {
@@ -247,7 +291,7 @@ public class EnemyChaseState : EnemyStateBase
         }
 
           //最終捕捉地点に到着するまでタイマーは動かない
-        if(!hasReachedLastSeenPosition)
+        if(!hasReachedSearchPosition)
         {
             if(!context.Movement.HasArrived)
             {
@@ -257,7 +301,7 @@ public class EnemyChaseState : EnemyStateBase
             //最終捕捉地点に到着した
             context.Movement.Stop();
 
-            hasReachedLastSeenPosition = true;
+            hasReachedSearchPosition = true;
             searchWaitingTimer = searchWaitingTime;
 
             Debug.Log($"{enemy.name}: 最終捕捉地点に到着しました。{searchWaitingTime}秒間待機します");
@@ -320,7 +364,7 @@ public class EnemyChaseState : EnemyStateBase
         //候補地をNavMesh上の有効な位置に変換する
         return context.Movement.TryGetNavMeshPoint(
             borderTemp,
-            borderSampleDistance,
+            navMeshSampleDistance,
             out point
         );
     }
