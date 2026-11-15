@@ -10,11 +10,7 @@ public class EnemyAttackState : EnemyStateBase
     {
         this.context = context;
     }
-
-    //仮調整用パラメータ。後で攻撃データ等へ情報を移す。前隙、持続、後隙の時間。
-            private readonly float startupTime = 0.8f;
-            private readonly float activeTime = 0.3f;
-            private readonly float recoveryTime = 1.0f;  
+    public AttackDefinition attack; 
     private enum AttackPhase
     {
         Startup,
@@ -28,6 +24,16 @@ public class EnemyAttackState : EnemyStateBase
     public override void Enter()
     {
         context.Movement.Stop();
+        attack = context.Combat.DefaultAttack;
+        if(attack == null)
+        {
+            Debug.LogWarning(
+                $"{enemy.name}:使用可能な攻撃がありません");
+
+            enemy.StateMachine.SwitchState<EnemyChaseState>();
+            return;
+        }
+
         EnterStartupPhase();
         Debug.Log($"{enemy.name}:戦闘状態に入りました");
     }
@@ -59,29 +65,28 @@ public class EnemyAttackState : EnemyStateBase
 
     public override void Exit()
     {
+        context.Combat.CancelAttack();
         phaseTimer = 0f;
     }
 
     private void EnterStartupPhase()
     {
         currentPhase = AttackPhase.Startup;
-        phaseTimer = startupTime;
-
-        Debug.Log($"{enemy.name}:前隙開始。{startupTime}秒");
+        phaseTimer = attack.StartupTime;
     }
     private void EnterActivePhase()
     {
         currentPhase = AttackPhase.Active;
-        phaseTimer = activeTime;
+        phaseTimer = attack.ActiveTime;
 
-        Debug.Log($"{enemy.name}:攻撃判定開始。{activeTime}秒");
+        context.Combat.BeginAttack(attack);
     }
     private void EnterRecoveryPhase()
     {
-        currentPhase = AttackPhase.Recovery;
-        phaseTimer = recoveryTime;
+        context.Combat.EndAttack();
 
-        Debug.Log($"{enemy.name}:攻撃判定終了、後隙開始。{recoveryTime}秒");
+        currentPhase = AttackPhase.Recovery;
+        phaseTimer = attack.RecoveryTime;
     }
     private void CompleteAttack()
     {
