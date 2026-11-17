@@ -130,7 +130,7 @@ public class EnemyCombat : MonoBehaviour
             return;
         }
 
-        EnemyHitData hitData = CreateHitData(other);
+        PlayerHitData hitData = CreateHitData(other);
 
         receiver.ReceiveHit(hitData);
 
@@ -138,7 +138,7 @@ public class EnemyCombat : MonoBehaviour
             $"{name}:攻撃が{other.name}にHit!");
     }
 
-    private EnemyHitData CreateHitData(Collider targetCollider)
+    private PlayerHitData CreateHitData(Collider targetCollider)
 {
     Vector3 hitPosition =
         targetCollider.ClosestPoint(attackHitbox.bounds.center);
@@ -153,7 +153,7 @@ public class EnemyCombat : MonoBehaviour
         direction.Normalize();
     }
 
-    return new EnemyHitData(
+    return new PlayerHitData(
         CurrentAttack.Damage,
         CurrentAttack.Impact,
         CurrentAttack.Knockback,

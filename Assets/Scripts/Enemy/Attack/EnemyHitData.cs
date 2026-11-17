@@ -9,7 +9,7 @@ public readonly struct EnemyHitData
     public Vector3 HitPosition { get; }
 
     public GameObject Attacker { get; }
-    public EnemyAttackDefinition Definition { get; }
+    public PlayerAttackDefinition Definition { get; }
 
     public EnemyHitData(
         float damage,
@@ -18,7 +18,7 @@ public readonly struct EnemyHitData
         Vector3 direction,
         Vector3 hitPosition,
         GameObject attacker,
-        EnemyAttackDefinition definition)
+        PlayerAttackDefinition definition)
     {
         Damage = damage;
         Impact = impact;

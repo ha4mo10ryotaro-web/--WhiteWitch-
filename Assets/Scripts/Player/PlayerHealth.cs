@@ -17,7 +17,7 @@ public sealed class PlayerHealth : MonoBehaviour, IPlayerDamageReceiver
         currentHealth = maxHealth;
     }
 
-    public void ReceiveHit(EnemyHitData hitdata)
+    public void ReceiveHit(PlayerHitData hitdata)
     {
         if(IsDead)
         {
