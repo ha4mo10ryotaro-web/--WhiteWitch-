@@ -1,10 +1,10 @@
 using UnityEngine;
 
 [CreateAssetMenu(
-    fileName = "AttackDefinition",
-    menuName = "WhiteWitch/Combat/Attack Definition"
+    fileName = "EnemyAttackkDefinition",
+    menuName = "WhiteWitch/Combat/Enemy Attack Definition"
 )]
-public sealed class AttackDefinition : ScriptableObject
+public sealed class EnemyAttackDefinition : ScriptableObject
 {
     [Header("攻撃時間内訳")]
     [SerializeField] private float startupTime = 0.8f;

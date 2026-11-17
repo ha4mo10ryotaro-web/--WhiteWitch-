@@ -10,13 +10,7 @@ public class EnemyAttackState : EnemyStateBase
     {
         this.context = context;
     }
-    public AttackDefinition attack; 
-    private enum AttackPhase
-    {
-        Startup,
-        Active,
-        Recovery
-    }
+    private EnemyAttackDefinition attack; 
     private AttackPhase currentPhase;
     private float phaseTimer;
 
@@ -25,6 +19,7 @@ public class EnemyAttackState : EnemyStateBase
     {
         context.Movement.Stop();
         attack = context.Combat.DefaultAttack;
+
         if(attack == null)
         {
             Debug.LogWarning(
@@ -66,17 +61,25 @@ public class EnemyAttackState : EnemyStateBase
     public override void Exit()
     {
         context.Combat.CancelAttack();
+        context.Combat.SetAttackPhase(AttackPhase.None);
+
         phaseTimer = 0f;
+        attack = null;
     }
 
     private void EnterStartupPhase()
     {
         currentPhase = AttackPhase.Startup;
+        context.Combat.SetAttackPhase(currentPhase);
+
         phaseTimer = attack.StartupTime;
+        Debug.Log($"{enemy.name}:{attack}攻撃開始");
     }
     private void EnterActivePhase()
     {
         currentPhase = AttackPhase.Active;
+        context.Combat.SetAttackPhase(currentPhase);
+
         phaseTimer = attack.ActiveTime;
 
         context.Combat.BeginAttack(attack);
@@ -86,6 +89,8 @@ public class EnemyAttackState : EnemyStateBase
         context.Combat.EndAttack();
 
         currentPhase = AttackPhase.Recovery;
+        context.Combat.SetAttackPhase(currentPhase);
+
         phaseTimer = attack.RecoveryTime;
     }
     private void CompleteAttack()

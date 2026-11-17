@@ -1,19 +1,21 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 public class EnemyCombat : MonoBehaviour
 {
     [SerializeField] private float attackRange = 2.0f;
     [SerializeField] private Collider attackHitbox;
     //攻撃を与えたオブジェクトのリスト
-    private readonly HashSet<GameObject> hitTargets
-        = new HashSet<GameObject>();
+    private readonly HashSet<IPlayerDamageReceiver> hitTargets
+        = new HashSet<IPlayerDamageReceiver>();
 
     [SerializeField]
-    private AttackDefinition defaultAttack;
-    public AttackDefinition DefaultAttack => defaultAttack;
-    public AttackDefinition CurrentAttack{get; private set;}
+    private EnemyAttackDefinition defaultAttack;
+    public EnemyAttackDefinition DefaultAttack => defaultAttack;
+    public EnemyAttackDefinition CurrentAttack{get; private set;}
+    public AttackPhase CurrentPhase{get; private set;}
+        = AttackPhase.None;
+
 
     public bool IsAttacking {get; private set;}
 
@@ -43,7 +45,7 @@ public class EnemyCombat : MonoBehaviour
     }
 
 //攻撃開始！
-    public bool BeginAttack(AttackDefinition attack)
+    public bool BeginAttack(EnemyAttackDefinition attack)
     {
         if (IsAttacking)
         {
@@ -106,15 +108,64 @@ public class EnemyCombat : MonoBehaviour
 
     public void OnHit(Collider other)
     {
-        GameObject target = other.gameObject;
+        IPlayerDamageReceiver receiver = 
+            other.GetComponentInParent<IPlayerDamageReceiver>();
 
-        //リスト追加が失敗（重複）＝その攻撃内で命中済み
-        if(!hitTargets.Add(target))
+        if(receiver == null)
         {
             return;
         }
+
+        if (CurrentAttack == null)
+        {
+            Debug.LogWarning(
+                $"{name}: CurrentAttackがない状態でHitしました");
+
+            return;
+        }
+
+        //リスト追加が失敗（重複）＝その攻撃内で命中済み
+        if(!hitTargets.Add(receiver))
+        {
+            return;
+        }
+
+        EnemyHitData hitData = CreateHitData(other);
+
+        receiver.ReceiveHit(hitData);
+
         Debug.Log(
             $"{name}:攻撃が{other.name}にHit!");
     }
 
+    private EnemyHitData CreateHitData(Collider targetCollider)
+{
+    Vector3 hitPosition =
+        targetCollider.ClosestPoint(attackHitbox.bounds.center);
+
+    Vector3 direction =
+        targetCollider.transform.position - transform.position;
+
+    direction.y = 0f;
+
+    if (direction.sqrMagnitude > 0f)
+    {
+        direction.Normalize();
+    }
+
+    return new EnemyHitData(
+        CurrentAttack.Damage,
+        CurrentAttack.Impact,
+        CurrentAttack.Knockback,
+        direction,
+        hitPosition,
+        gameObject,
+        CurrentAttack);
+}
+
+
+    public void SetAttackPhase(AttackPhase phase)
+    {
+        CurrentPhase = phase;
+    }
 }
