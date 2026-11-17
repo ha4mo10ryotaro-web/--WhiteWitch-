@@ -1,7 +1,11 @@
 
+using NUnit.Framework.Constraints;
+
 public class PlayerAttackState : PlayerStateBase
 {   
      private readonly IPlayerAttackContext context;
+
+     private AttackPhase phase = AttackPhase.None;
     public PlayerAttackState(
         PlayerStateMachine stateMachine,
         IPlayerAttackContext context) 
@@ -13,14 +17,23 @@ public class PlayerAttackState : PlayerStateBase
     public override void Enter()
     {
         context.Movement.Stop();
-        context.Combat.BeginAttack();
-        return;
+        
+        PlayerAttackDefinition attack = context.Combat.CurrentAttack;
+
+        if(attack == null)
+        {
+            StateMachine.SwitchState<PlayerNormalState>();
+            return;
+        }
+        
+        phase = AttackPhase.Startup;
+
     }
 
     public override void Update()
     {
         context.Combat.TickAttack();
-        
+
         if(context.Combat.IsAttackFinished)
         {
             StateMachine.SwitchState<PlayerNormalState>();
