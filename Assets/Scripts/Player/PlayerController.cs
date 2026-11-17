@@ -22,8 +22,7 @@ public sealed class PlayerController :
     public PlayerCombat Combat { get; private set; }
 
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
         StateMachine = GetComponent<PlayerStateMachine>();
         Input = GetComponent<PlayerInputReader>();
