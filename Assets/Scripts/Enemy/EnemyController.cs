@@ -12,14 +12,14 @@ public sealed class EnemyController : MonoBehaviour
 
 
     //敵の行動部門。遅延取得させる
-    private EnemyBehaviorModule behaviour;
+    private EnemyBehaviorModule behavior;
     public EnemyBehaviorModule Behavior { get
         {
-            if(behaviour == null)
+            if(behavior == null)
             {
-                behaviour = GetComponent<EnemyBehaviorModule>();
+                behavior = GetComponent<EnemyBehaviorModule>();
             }
-            return behaviour;
+            return behavior;
         }}
     public EnemyReactionModule Reaction { get; private set; }
     public EnemyStatusModule Status { get; private set; }

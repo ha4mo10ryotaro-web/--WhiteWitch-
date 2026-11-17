@@ -26,7 +26,7 @@ public class EnemyChaseState : EnemyStateBase
     private bool hasReachedBorder = false;
     private bool hasReachedSearchPosition = false;
 
-    private IEnemyChaseContext context;
+    private readonly IEnemyChaseContext context;
     public EnemyChaseState(
         EnemyController enemy,
         IEnemyChaseContext context) : base(enemy)
@@ -54,10 +54,11 @@ public class EnemyChaseState : EnemyStateBase
                 lastSeenPosition = enemy.Target.position; 
             }
 
-            
+            /*
             Vector3 warpPos = new Vector3(-17f,0.3f,-6.5f);
             //デバッグ用。好きな座標にワープさせる
             context.Movement.DebugWarp(warpPos);
+            */
     }
 
 
@@ -131,14 +132,12 @@ public class EnemyChaseState : EnemyStateBase
         lastSeenPosition =
             enemy.Target.position;
 
-        /*Combat実装後に解放
         if(context.Combat.IsInAttackRange(enemy.Target))
         {
             enemy.StateMachine.SwitchState<EnemyAttackState>();
 
             return;
         }
-        */
 
         //追跡対象が追跡半径外に出た場合、追跡をやめる
         if(!IsTargetInChaseRadius())
