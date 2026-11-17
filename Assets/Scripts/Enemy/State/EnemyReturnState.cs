@@ -1,11 +1,9 @@
-using System;
-using System.IO;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyReturnState : EnemyStateBase
 {
-    public readonly IEnemyReturnContext context;
+    private readonly IEnemyReturnContext context;
     public EnemyReturnState(
         EnemyController enemy, IEnemyReturnContext context)
          : base(enemy)
