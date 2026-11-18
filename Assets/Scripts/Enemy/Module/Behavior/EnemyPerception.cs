@@ -1,24 +1,53 @@
 using UnityEngine;
-
+[DisallowMultipleComponent]
 public sealed class EnemyPerception : MonoBehaviour
 {
     [Header("視点")]
     [SerializeField]
     private Transform eyePoint;
 
-    [Header("検知範囲")]
-    [SerializeField, Min(0f)]
-    private float detectionRange = 12f;
-
-    [SerializeField, Range(0f, 360f)]
-    private float horizontalViewAngle = 120f;
-
-    [SerializeField, Range(0f, 180f)]
-    private float verticalViewAngle = 60f;
-
     [Header("遮蔽判定")]
     [SerializeField]
     private LayerMask sightMask;
+
+    private EnemyController enemy;
+
+    private float detectionRange;
+    private float horizontalViewAngle;
+    private float verticalViewAngle;
+
+    public float DetectionRange => detectionRange;
+    public float HorizontalViewAngle => horizontalViewAngle;
+    public float VerticalViewAgle => verticalViewAngle;
+
+
+    private void Awake(){
+
+        enemy = GetComponentInParent<EnemyController>();
+
+        if(enemy == null)
+        {
+            Debug.LogError(
+                $"{name}:EnemyControllerがありません");
+            return;
+        }
+
+        if(enemy.Stats == null)
+        {
+            Debug.LogError(
+                $"{name}:EnemyStatsDataが設定されていません");
+            return;
+        }
+
+        InitializeStats();
+    }
+
+    private void InitializeStats()
+    {
+        detectionRange = enemy.Stats.DetectionRange;
+        horizontalViewAngle = enemy.Stats.HorizontalView;
+        verticalViewAngle = enemy.Stats.VerticalView;
+    }
 
     //自分から攻撃対象が見えてますか？
     public bool CanSee(Transform target)

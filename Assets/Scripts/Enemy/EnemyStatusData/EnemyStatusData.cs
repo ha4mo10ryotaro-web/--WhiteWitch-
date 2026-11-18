@@ -14,7 +14,7 @@ public class EnemyStatsData : ScriptableObject
     [SerializeField, Min(0.01f)] private float weight = 1f;
 
     [Header("探索")]
-    [SerializeField, Min(0f)] private float wanderRadius = 8f;
+    [SerializeField, Min(0f)] private float exploreRadius = 8f;
     [SerializeField, Min(0f)] private float wanderWaitTime = 2f;
 
     [Header("索敵")]
@@ -24,7 +24,7 @@ public class EnemyStatsData : ScriptableObject
     [SerializeField, Min(0f)] private float loseTargetRange = 25f;
     [Tooltip("プレイヤーを視認できる視野角")]
     [SerializeField, Range(0f, 360f)] private float horizontalView = 120f;
-    [SerializeField, Range(0f, 360f)] private float verticalView = 120f;
+    [SerializeField, Range(0f, 180f)] private float verticalView = 120f;
 
     [Header("戦闘")]
     [SerializeField, Min(0f)] private float attackRange = 2.5f;
@@ -34,7 +34,7 @@ public class EnemyStatsData : ScriptableObject
     public float MoveSpeed => moveSpeed;
     public float ImpactResistance => impactResistance;
     public float Weight => weight;
-    public float WanderRadius => wanderRadius;
+    public float ExploreRadius => exploreRadius;
     public float WanderWaitTime => wanderWaitTime;
 
     public float DetectionRange => detectionRange;

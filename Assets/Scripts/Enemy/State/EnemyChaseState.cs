@@ -10,7 +10,7 @@ public class EnemyChaseState : EnemyStateBase
         StayingLastPos
     }
     private ChasePhase currentPhase = ChasePhase.Chasing;
-    //仮調整用ステータス。敵StatsDataに入れるべきもの
+    //仮調整用ステータス。敵StatsDataに入れるべきものもある……？
         private readonly float chaseRadius = 15f;
         //境界線の場所をNavMesh上でサンプリングする範囲。
         //半径内のNavMesh上に有効な位置がない場合は、境界線の場所を決定できない

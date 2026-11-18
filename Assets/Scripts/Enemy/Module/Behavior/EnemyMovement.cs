@@ -6,6 +6,9 @@ using UnityEngine.AI;
 public class EnemyMovement : MonoBehaviour
 {
     private NavMeshAgent agent;
+    private EnemyController enemy;
+
+    private float baseMoveSpeed;
 
     // NavMeshAgentが有効な状態で移動中かどうかを返す
     public bool IsMoving =>
@@ -33,6 +36,24 @@ public class EnemyMovement : MonoBehaviour
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        enemy = GetComponent<EnemyController>();
+
+          if(enemy.Stats == null)
+        {
+            Debug.LogError(
+                $"{name}:EnemyStatsDataが設定されていません",this
+            );
+            enabled = false;
+            return;
+        }
+
+        baseMoveSpeed = enemy.Stats.MoveSpeed;
+        RefreshMoveSpeed();
+    }
+
+    public void RefreshMoveSpeed(float multiplier = 1f)
+    {
+        agent.speed = baseMoveSpeed * multiplier;
     }
 
     // 目的地設定、ナビ開始（停止状態の解除）

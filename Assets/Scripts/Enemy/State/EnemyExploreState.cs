@@ -1,3 +1,4 @@
+using Unity.XR.Oculus.Input;
 using UnityEngine;
 
 public class EnemyExploreState : EnemyStateBase
@@ -5,11 +6,10 @@ public class EnemyExploreState : EnemyStateBase
     private readonly IEnemyExploreContext context;
 
     //本来は敵Stats内で作られるステータス。仮置きでつくる。
-        private readonly float exploreRadius = 8.0f;
-        //探索状態での待機時間の最小値と最大値
-            private readonly float waitDurationMin = 1.0f;
-            private readonly float waitDurationMax = 3.0f;
-
+        private float exploreRadius;
+        private float waitDurationMax;
+        private readonly float waitDurationMin = 1.0f;
+         
 
     //探索範囲の基準となる点（現在地）
     private Vector3 explorePointCenter;
@@ -27,6 +27,11 @@ public class EnemyExploreState : EnemyStateBase
         this.context = context;
     }
 
+    public void awake()
+    {
+        exploreRadius = enemy.Stats.ExploreRadius;
+        waitDurationMax = enemy.Stats.WanderWaitTime + waitDurationMin;
+    }
     public override void Enter()
     {
         Debug.Log("探索状態に入りました");
@@ -34,6 +39,8 @@ public class EnemyExploreState : EnemyStateBase
         explorePointCenter = enemy.SpawnPos;
         isWaiting = false;
         waitTimer = 0f;
+
+
 
         //探索開始時に目的地を決定する
         SelectNextDestination();
