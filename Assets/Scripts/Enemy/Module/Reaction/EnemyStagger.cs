@@ -13,6 +13,9 @@ public class EnemyStagger : MonoBehaviour
     {
         movement = GetComponent<EnemyMovement>();
         combat = GetComponent<EnemyCombat>();
+        
+        IsStaggered = false;
+        staggerTimer = 0f;
     }
 
     public void BeginStagger(float duration)
