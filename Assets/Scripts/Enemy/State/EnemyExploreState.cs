@@ -1,4 +1,3 @@
-using Unity.XR.Oculus.Input;
 using UnityEngine;
 
 public class EnemyExploreState : EnemyStateBase
@@ -25,13 +24,12 @@ public class EnemyExploreState : EnemyStateBase
         : base(enemy)
     {
         this.context = context;
-    }
 
-    public void awake()
-    {
         exploreRadius = enemy.Stats.ExploreRadius;
         waitDurationMax = enemy.Stats.WanderWaitTime + waitDurationMin;
+
     }
+
     public override void Enter()
     {
         Debug.Log("探索状態に入りました");

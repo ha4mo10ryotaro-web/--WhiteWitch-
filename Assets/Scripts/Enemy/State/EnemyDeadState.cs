@@ -2,34 +2,30 @@ using UnityEngine;
 
 public class EnemyDeadState : EnemyStateBase
 {
-    public EnemyDeadState(EnemyController enemy) : base(enemy)
+    private readonly IEnemyDeadContext context;
+    public EnemyDeadState(
+        EnemyController enemy,
+        IEnemyDeadContext context) : base(enemy)
     {
-        //stateMachine(管理者)の登録処理はEnemyStateBaseにある
+        this.context = context;
     }
 
 
     //override……親クラス側でabstractで丸投げされてた中身の処理を上書きするよ！
     public override void Enter()
     {
-            Debug.Log("探索状態に入りました");
-    }
+        context.Movement.Stop();
+        context.Combat.CancelAttack();
 
+        Debug.Log($"{enemy.name}:死亡");
+    }
 
     public override void Update()
     {
-        /*
-        if(プレイヤー発見処理)
-        {
-            stateMachine.SwitchState(typeof(EnemyChaseState));
-        }
-        */
     }
-
 
     public override void Exit()
     {
-
-
     }
 
 }

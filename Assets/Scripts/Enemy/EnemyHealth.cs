@@ -45,8 +45,8 @@ public sealed class EnemyHealth : MonoBehaviour, IEnemyDamageReceiver
 
         if(IsDead)
         {
+            enemy.RequestDeath();
             Debug.Log($"{enemy.name}:HPが0になりました");
-            //ゲームオーバー判定、ステータスがdeadに？
         }
     }
 

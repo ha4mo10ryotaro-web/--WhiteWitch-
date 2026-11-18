@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 //行動部門の
@@ -6,7 +7,8 @@ public sealed class EnemyBehaviorModule :
  IEnemyExploreContext,
  IEnemyChaseContext,
  IEnemyReturnContext,
- IEnemyAttackContext
+ IEnemyAttackContext,
+ IEnemyDeadContext
 {
     
     public EnemyMovement Movement { get; private set; }
@@ -16,7 +18,7 @@ public sealed class EnemyBehaviorModule :
     private void Awake()
     {
         Movement = GetComponent<EnemyMovement>();
-        Perception = GetComponent<EnemyPerception>();
+        Perception = GetComponentInChildren<EnemyPerception>();
         Combat = GetComponent<EnemyCombat>();
     }
 }

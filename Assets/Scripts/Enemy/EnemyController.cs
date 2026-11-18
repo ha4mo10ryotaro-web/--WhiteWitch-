@@ -35,4 +35,9 @@ public sealed class EnemyController : MonoBehaviour
         Status = GetComponent<EnemyStatusModule>();
         SpawnPos = transform.position;
     }
+
+    public void RequestDeath()
+    {
+        StateMachine.SwitchState<EnemyDeadState>();
+    }
 }

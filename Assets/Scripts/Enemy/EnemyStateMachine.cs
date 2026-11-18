@@ -38,7 +38,7 @@ public class EnemyStateMachine : MonoBehaviour
             { typeof(EnemyAttackState), new EnemyAttackState(enemy, enemy.Behavior) },
 
             { typeof(EnemyReturnState), new EnemyReturnState(enemy, enemy.Behavior) },
-            { typeof(EnemyDeadState), new EnemyDeadState(enemy) },
+            { typeof(EnemyDeadState), new EnemyDeadState(enemy, enemy.Behavior) },
         };
 
     }
