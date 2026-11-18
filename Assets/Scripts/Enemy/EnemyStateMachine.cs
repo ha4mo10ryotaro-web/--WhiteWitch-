@@ -1,6 +1,7 @@
 using System;//Type使うため
 using UnityEngine;
 using System.Collections.Generic;
+using System.Buffers;
 
 
 //このスクリプトをGameObjにアタッチする時、指定したコンポーネント（エネミーコントローラー）を要求する
@@ -21,10 +22,16 @@ public class EnemyStateMachine : MonoBehaviour
     //外側から現在のStateの型”のみ”を参照させる
     //呼び出される度に右辺を計算して結果を返す、読み取り専用プロパティ。そも代入が外部からできない。
     public Type CurrentStateType => currentState?.GetType();
+    private EnemyReactionModule reaction;
+    public bool IsPaused =>
+        reaction != null &&
+        reaction.IsBlockingState;
 
     //ゲーム開始時(生成時とは異なる)に実行される
     void Awake()
     {
+        reaction = GetComponent<EnemyReactionModule>();
+
         enemy = GetComponent<EnemyController>();
 
         //クラスを扱うため、newでインスタンス化（生成）する必要がある
@@ -51,6 +58,12 @@ public class EnemyStateMachine : MonoBehaviour
 
     void Update()
     {
+        //割り込みポーズ中ならUpdateさせない
+        if(IsPaused)
+        {
+            return;
+        }
+
         //null条件演算子として?が付けられている。currentStateがnullの時は実行しない。
         //管理者が現在のステータスのUpdateを呼び出す
         currentState?.Update();
