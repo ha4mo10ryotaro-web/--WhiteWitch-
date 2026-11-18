@@ -272,5 +272,16 @@ public class EnemyMovement : MonoBehaviour
         }
 
         agent.Warp(position);
-}
+    }
+
+    //MoveToで経路作って移動ではなく、強制的に場所をずらす
+    public void ForcedMove (Vector3 force)
+    {
+        if(!agent.isOnNavMesh)
+        {
+            return;
+        }
+
+        agent.Move(force);
+    }
 }
