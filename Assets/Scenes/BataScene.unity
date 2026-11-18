@@ -517,7 +517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63249ef17cd54934ba3fc60b51e57b4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  <Stats>k__BackingField: {fileID: 11400000, guid: b1fc9fac461159f459c6876c629a21c2, type: 2}
+  <Stats>k__BackingField: {fileID: 11400000, guid: f7b659d110223a941a156e77a116e054, type: 2}
   <Target>k__BackingField: {fileID: 1602382725}
 --- !u!135 &668206198
 SphereCollider:
@@ -1363,7 +1363,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 797eb51398b930740ab669282920cf4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  maxHealth: 100
 --- !u!1 &1917222370
 GameObject:
   m_ObjectHideFlags: 0

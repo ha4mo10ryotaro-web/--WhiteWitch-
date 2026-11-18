@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4db5ac23cc86de04c87aa7c6568f7f1a, type: 3}
-  m_Name: TestEnemyData
+  m_Script: {fileID: 11500000, guid: 70fbf111a78208646abb7541e395c74d, type: 3}
+  m_Name: TestEnemyStats
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStatsData
   maxHealth: 100
   moveSpeed: 3.5
@@ -20,6 +20,7 @@ MonoBehaviour:
   wanderWaitTime: 2
   detectionRange: 15
   loseTargetRange: 25
-  fieldOfView: 120
+  horizontalView: 120
+  verticalView: 120
   attackRange: 2.5
   attackCooldown: 1.5
