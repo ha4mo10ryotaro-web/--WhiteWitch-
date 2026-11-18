@@ -23,7 +23,10 @@ public class PlayerNormalState : PlayerStateBase
 
         if(context.Input.ConsumeAttackPressed())
         {
-            StateMachine.SwitchState<PlayerAttackState>();
+            if(context.Combat.PrepareDefaultAttack())
+            {
+                StateMachine.SwitchState<PlayerAttackState>();
+            }
         }
         return;
 

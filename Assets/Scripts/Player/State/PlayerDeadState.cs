@@ -14,7 +14,7 @@ public class PlayerDeadState : PlayerStateBase
     public override void Enter()
     {
         context.Movement.SetEnabled(false);
-        context.Combat.CancelCurrentAction();
+        context.Combat.CancelAttack();
         context.Input.SetInputEnabled(false);
     }
 

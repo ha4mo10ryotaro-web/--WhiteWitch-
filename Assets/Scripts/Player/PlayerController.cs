@@ -26,7 +26,8 @@ public sealed class PlayerController :
     {
         StateMachine = GetComponent<PlayerStateMachine>();
         Input = GetComponent<PlayerInputReader>();
-
+        Movement = GetComponent<PlayerMovement>();
+        Combat = GetComponent<PlayerCombat>();
 
         StateMachine.Initialize(this);
     }

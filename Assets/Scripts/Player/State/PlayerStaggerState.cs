@@ -25,7 +25,7 @@ public class PlayerStaggerState : PlayerStateBase
         elapsed = 0f;
         //行動を強制キャンセル
         context.Movement.Stop();
-        context.Combat.CancelCurrentAction();
+        context.Combat.CancelAttack();
     }
 
     public override void Update()

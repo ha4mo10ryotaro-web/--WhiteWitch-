@@ -14,42 +14,31 @@ public sealed class PlayerCombat : MonoBehaviour
     private readonly HashSet<IEnemyDamageReceiver> hitTargets
         = new HashSet<IEnemyDamageReceiver>();
 
-    public PlayerAttackDefinition DefaultAttack => defaultAttack;
+    //テスト用デフォ攻撃
+    public PlayerAttackDefinition DefaultAttack
+        => defaultAttack;
 
-    public PlayerAttackDefinition CurrentAttack
-    {
-        get;
-        private set;
-    }
+    public PlayerAttackDefinition CurrentAttack { get;  private set;}
 
-    public AttackPhase CurrentPhase
-    {
-        get;
-        private set;
-    } = AttackPhase.None;
+    public AttackPhase CurrentPhase {get;private set;} = AttackPhase.None;
 
-    //持続中かどうか
-    public bool IsAttacking {get; private set;}
+    //攻撃判定は有効か？
+    public bool IsAttacking { get; private set;}
 
     private void Awake()
     {
-        DisableHitbox();
+        ResetCombatState();
     }
 
-    /// <summary>
-    /// 暫定的に通常攻撃1段目を準備する。
-    /// 将来はコンボ段階からDefinitionを選択する。
-    /// </summary>
+    //試験的にデフォの攻撃を設定する
     public bool PrepareDefaultAttack()
     {
         return PrepareAttack(defaultAttack);
     }
 
-    /// <summary>
-    /// 今回実行する攻撃を確定する。
-    /// この時点ではHitboxを有効にしない。
-    /// </summary>
-    public bool PrepareAttack(PlayerAttackDefinition attack)
+    //攻撃準備。使う攻撃の定義
+    public bool PrepareAttack(
+        PlayerAttackDefinition attack)
     {
         if (attack == null)
         {
@@ -70,14 +59,18 @@ public sealed class PlayerCombat : MonoBehaviour
         }
 
         CurrentAttack = attack;
-        CurrentPhase = AttackPhase.Startup;
+
+        // Startupへの移行はPlayerAttackStateが担当する。
+        CurrentPhase = AttackPhase.None;
+        IsAttacking = false;
+
+        DisableHitbox();
+        hitTargets.Clear();
 
         return true;
     }
 
-    /// <summary>
-    /// Active開始。
-    /// </summary>
+   //前隙開始。前回の攻撃対象の履歴削除
     public bool BeginAttack()
     {
         if (CurrentAttack == null)
@@ -92,6 +85,10 @@ public sealed class PlayerCombat : MonoBehaviour
 
         if (IsAttacking)
         {
+            Debug.LogWarning(
+                $"{name}: すでにActiveフェーズ中です。",
+                this);
+
             return false;
         }
 
@@ -104,10 +101,7 @@ public sealed class PlayerCombat : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Active終了、Recovery開始。
-    /// CurrentAttackはRecovery終了まで保持する。
-    /// </summary>
+    //攻撃終了。後隙開始。
     public void EndAttack()
     {
         IsAttacking = false;
@@ -117,31 +111,33 @@ public sealed class PlayerCombat : MonoBehaviour
         hitTargets.Clear();
     }
 
-    /// <summary>
-    /// Recoveryまで正常に完了した。
-    /// </summary>
+    //正常終了
     public void FinishAttack()
     {
         ResetCombatState();
     }
 
-    /// <summary>
-    /// 被弾や死亡などによる強制中断。
-    /// 現在状態に関係なく安全状態へ戻す。
-    /// </summary>
-    public void CancelCurrentAction()
+    /// 被弾、死亡、別行動への割り込み等による強制終了
+    public void CancelAttack()
     {
         ResetCombatState();
     }
 
+    /// PlayerAttackStateが管理するフェーズを取ってくる
     public void SetAttackPhase(AttackPhase phase)
     {
         CurrentPhase = phase;
     }
 
+    /// PlayerAttackHitboxから接触対象を受け取る。
     public void OnHit(Collider other)
     {
         if (!IsAttacking)
+        {
+            return;
+        }
+
+        if (CurrentPhase != AttackPhase.Active)
         {
             return;
         }
@@ -155,6 +151,11 @@ public sealed class PlayerCombat : MonoBehaviour
             return;
         }
 
+        if (other == null)
+        {
+            return;
+        }
+
         IEnemyDamageReceiver receiver =
             other.GetComponentInParent<IEnemyDamageReceiver>();
 
@@ -163,13 +164,14 @@ public sealed class PlayerCombat : MonoBehaviour
             return;
         }
 
-        // falseなら、この攻撃中に同じ対象へ命中済み。
+        // falseなら、同じ攻撃のActive中に命中済み。
         if (!hitTargets.Add(receiver))
         {
             return;
         }
 
-        EnemyHitData hitData = CreateHitData(other);
+        EnemyHitData hitData =
+            CreateHitData(other);
 
         receiver.ReceiveHit(hitData);
 
@@ -178,16 +180,20 @@ public sealed class PlayerCombat : MonoBehaviour
             this);
     }
 
-    private EnemyHitData CreateHitData(Collider targetCollider)
+    private EnemyHitData CreateHitData(
+        Collider targetCollider)
     {
-        Vector3 hitPosition =
+        Vector3 hitOrigin =
             attackHitbox != null
-                ? targetCollider.ClosestPoint(
-                    attackHitbox.bounds.center)
-                : targetCollider.ClosestPoint(transform.position);
+                ? attackHitbox.bounds.center
+                : transform.position;
+
+        Vector3 hitPosition =
+            targetCollider.ClosestPoint(hitOrigin);
 
         Vector3 direction =
-            targetCollider.transform.position - transform.position;
+            targetCollider.transform.position
+            - transform.position;
 
         direction.y = 0f;
 
@@ -222,10 +228,16 @@ public sealed class PlayerCombat : MonoBehaviour
 
     private void EnableHitbox()
     {
-        if (attackHitbox != null)
+        if (attackHitbox == null)
         {
-            attackHitbox.enabled = true;
+            Debug.LogWarning(
+                $"{name}: AttackHitboxが設定されていません。",
+                this);
+
+            return;
         }
+
+        attackHitbox.enabled = true;
     }
 
     private void DisableHitbox()
@@ -235,4 +247,14 @@ public sealed class PlayerCombat : MonoBehaviour
             attackHitbox.enabled = false;
         }
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (attackHitbox != null)
+        {
+            attackHitbox.isTrigger = true;
+        }
+    }
+#endif
 }

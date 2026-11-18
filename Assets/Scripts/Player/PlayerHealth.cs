@@ -3,18 +3,17 @@ using UnityEngine.AI;
 
 public sealed class PlayerHealth : MonoBehaviour, IPlayerDamageReceiver
 {
-    [SerializeField]
-    private float maxHealth = 100f;
-
+    private PlayerController player;
     private float currentHealth;
     //外部から読み取る用プロパティ
     public float CurrentHealth => currentHealth;
-    public float MaxHealth =>maxHealth;
+    public float MaxHealth => player.Stats.MaxHealth;
     public bool IsDead => currentHealth <= 0f;
 
     private void Awake()
     {
-        currentHealth = maxHealth;
+        player = GetComponent<PlayerController>();
+        currentHealth = MaxHealth;
     }
 
     public void ReceiveHit(PlayerHitData hitdata)
@@ -31,7 +30,7 @@ public sealed class PlayerHealth : MonoBehaviour, IPlayerDamageReceiver
 
         Debug.Log(
             $"Player被弾！ {hitdata.Damage}ダメージ / " +
-            $"HP {currentHealth}/{maxHealth}");
+            $"HP {currentHealth}/{MaxHealth}");
 
         if(IsDead)
         {
