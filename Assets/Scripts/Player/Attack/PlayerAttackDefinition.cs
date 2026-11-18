@@ -21,7 +21,7 @@ public sealed class PlayerAttackDefinition : ScriptableObject
     [SerializeField, Min(0f)] private float forwardMovement;
 
     [Header("攻撃時間内訳")]
-    [SerializeField, Min(0f)]private float windupTime;
+    [SerializeField, Min(0f)]private float startupTime;
     [SerializeField, Min(0f)]private float activeTime;
     [SerializeField, Min(0f)]private float recoveryTime;
 
@@ -36,7 +36,7 @@ public sealed class PlayerAttackDefinition : ScriptableObject
 
     public float ForwardMovement => forwardMovement;
 
-    public float WindupTime => windupTime;
+    public float StartupTime => startupTime;
     public float ActiveTime => activeTime;
     public float RecoveryTime => recoveryTime;
 

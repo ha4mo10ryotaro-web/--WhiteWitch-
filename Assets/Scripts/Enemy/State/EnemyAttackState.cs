@@ -53,7 +53,6 @@ public class EnemyAttackState : EnemyStateBase
             case AttackPhase.Recovery:
                 CompleteAttack();
                 break;
-
         }
 
     }
