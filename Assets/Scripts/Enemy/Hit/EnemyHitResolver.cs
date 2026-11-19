@@ -89,7 +89,7 @@ public sealed class EnemyHitResolver : MonoBehaviour
 
         float effectiveResistance =
             ResolveImpactResistance(
-                status.DynamicStats.CurrentResistance,
+                status.DynamicStats.CurrentImpactResistance,
                 counterModifier.ImpactResistanceMultiplier);
 
         return StaggerResult.None;
@@ -105,7 +105,7 @@ public sealed class EnemyHitResolver : MonoBehaviour
     {
         //重さによる具体的なノックバック距離の計算式は未定
         //staggerResultによる強怯みも後々？
-        return (knockback / status.DynamicStats.Weight) * modifier.KnockbackMultiplier;
+        return knockback / status.Stats.Weight * modifier.KnockbackMultiplier;
     }
 
     private float ResolveStaggerDuration(EnemyCounterModifierData modifier)

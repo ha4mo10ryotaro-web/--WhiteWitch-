@@ -7,9 +7,9 @@ public class EnemyMovement : MonoBehaviour
 {
     private NavMeshAgent agent;
     private EnemyController enemy;
+    private EnemyStatusModule status;
 
-    private float baseMoveSpeed;
-
+    
     // NavMeshAgentが有効な状態で移動中かどうかを返す
     public bool IsMoving =>
         agent.isOnNavMesh && !agent.isStopped && agent.hasPath;
@@ -37,8 +37,9 @@ public class EnemyMovement : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         enemy = GetComponent<EnemyController>();
+        status = GetComponent<EnemyStatusModule>();
 
-          if(enemy.Stats == null)
+          if(status.Stats == null)
         {
             Debug.LogError(
                 $"{name}:EnemyStatsDataが設定されていません",this
@@ -47,13 +48,12 @@ public class EnemyMovement : MonoBehaviour
             return;
         }
 
-        baseMoveSpeed = enemy.Stats.MoveSpeed;
         RefreshMoveSpeed();
     }
 
-    public void RefreshMoveSpeed(float multiplier = 1f)
+    public void RefreshMoveSpeed()
     {
-        agent.speed = baseMoveSpeed * multiplier;
+        agent.speed = status.DynamicStats.CurrentMoveSpeed;
     }
 
     // 目的地設定、ナビ開始（停止状態の解除）

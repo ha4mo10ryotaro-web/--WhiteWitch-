@@ -1,11 +1,13 @@
 using UnityEngine;
 public sealed class EnemyStatusModule : MonoBehaviour
 {
-    private EnemyController enemy;
+    [field: SerializeField]
+    public EnemyStatsData Stats {get; private set;}
+    public EnemyDynamicStats DynamicStats {get; private set; }
 
     public EnemyHealth Health { get; private set; }
 
-    public EnemyDinamicStats DynamicStats {get; private set; }
+
     public EnemyMixedColorStatus MixedColor { get; private set; }
     public EnemySuperResolution SuperResolution { get; private set; }
 
@@ -38,8 +40,10 @@ public sealed class EnemyStatusModule : MonoBehaviour
     */
     private void Awake()
     {
-        enemy =
-            GetComponent<EnemyController>();
+        DynamicStats = 
+            GetComponent<EnemyDynamicStats>();
+            
+        DynamicStats.Initialize();
 
         Health =
             GetComponent<EnemyHealth>();

@@ -4,12 +4,6 @@ public class EnemyExploreState : EnemyStateBase
 {
     private readonly IEnemyExploreContext context;
 
-    //本来は敵Stats内で作られるステータス。仮置きでつくる。
-        private float exploreRadius;
-        private float waitDurationMax;
-        private readonly float waitDurationMin = 1.0f;
-         
-
     //探索範囲の基準となる点（現在地）
     private Vector3 explorePointCenter;
 
@@ -24,12 +18,7 @@ public class EnemyExploreState : EnemyStateBase
         : base(enemy)
     {
         this.context = context;
-
-        exploreRadius = enemy.Stats.ExploreRadius;
-        waitDurationMax = enemy.Stats.WanderWaitTime + waitDurationMin;
-
     }
-
     public override void Enter()
     {
         Debug.Log("探索状態に入りました");
@@ -81,10 +70,7 @@ public class EnemyExploreState : EnemyStateBase
     {
         context.Movement.Stop();
 
-        waitTimer = Random.Range(
-            waitDurationMin,
-            waitDurationMax
-        );
+        waitTimer = context.Status.ExploreWaitTime;
 
         isWaiting = true;
     }
@@ -107,7 +93,7 @@ public class EnemyExploreState : EnemyStateBase
         //探索範囲内のランダムな目的地を決定する
         if(!context.Movement.MoveToRandomPoint(
             explorePointCenter,
-            exploreRadius,
+            context.Status.ExploreRadius,
             out Vector3 nextDestination))
         {
             Debug.LogWarning(

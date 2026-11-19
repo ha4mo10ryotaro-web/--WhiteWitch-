@@ -2,8 +2,6 @@ using UnityEngine;
 
 public sealed class EnemyController : MonoBehaviour
 {
-    [field: SerializeField]
-    public EnemyStatsData Stats { get; private set; }
     //仮置き。攻撃目標のTransformを取得するために使用する
     [field: SerializeField]
     public Transform Target { get; private set; }

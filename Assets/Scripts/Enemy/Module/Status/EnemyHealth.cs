@@ -3,6 +3,7 @@ using UnityEngine;
 public sealed class EnemyHealth : MonoBehaviour
 {
     private EnemyController enemy;
+    private EnemyStatusModule status;
     private float currentHealth;
     private float maxHealth;
 
@@ -15,15 +16,16 @@ public sealed class EnemyHealth : MonoBehaviour
     private void Awake()
     {
         enemy = GetComponent<EnemyController>();
+        status = GetComponent<EnemyStatusModule>();
 
-        if(enemy.Stats == null)
+        if(status.Stats == null)
         {
             Debug.LogError(
                 $"{name}:EnemyStatsDataが設定されていません",this
             );
         }
         
-        maxHealth = enemy.Stats.MaxHealth;
+        maxHealth = status.Stats.MaxHealth;
         currentHealth = MaxHealth;
     }
 
@@ -40,13 +42,13 @@ public sealed class EnemyHealth : MonoBehaviour
         );
 
         Debug.Log(
-            $"{enemy.name}被弾！ {damage}ダメージ / " +
+            $"{name}被弾！ {damage}ダメージ / " +
             $"HP {currentHealth}/{MaxHealth}");
 
         if(IsDead)
         {
             enemy.RequestDeath();
-            Debug.Log($"{enemy.name}:HPが0になりました");
+            Debug.Log($"{name}:HPが0になりました");
         }
     }
 

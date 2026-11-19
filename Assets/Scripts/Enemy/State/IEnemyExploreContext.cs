@@ -4,4 +4,5 @@ public interface IEnemyExploreContext
 {
     EnemyMovement Movement { get; } 
     EnemyPerception Perception { get; }
+    EnemyStatsData Status { get; }
 }

@@ -10,29 +10,24 @@ public sealed class EnemyPerception : MonoBehaviour
     [SerializeField]
     private LayerMask sightMask;
 
-    private EnemyController enemy;
+    private EnemyStatusModule status;
 
     private float detectionRange;
     private float horizontalViewAngle;
     private float verticalViewAngle;
 
-    public float DetectionRange => detectionRange;
-    public float HorizontalViewAngle => horizontalViewAngle;
-    public float VerticalViewAgle => verticalViewAngle;
-
-
     private void Awake(){
 
-        enemy = GetComponentInParent<EnemyController>();
+        status = GetComponentInParent<EnemyStatusModule>();
 
-        if(enemy == null)
+        if(status == null)
         {
             Debug.LogError(
                 $"{name}:EnemyControllerがありません");
             return;
         }
 
-        if(enemy.Stats == null)
+        if(status.Stats == null)
         {
             Debug.LogError(
                 $"{name}:EnemyStatsDataが設定されていません");
@@ -44,9 +39,9 @@ public sealed class EnemyPerception : MonoBehaviour
 
     private void InitializeStats()
     {
-        detectionRange = enemy.Stats.DetectionRange;
-        horizontalViewAngle = enemy.Stats.HorizontalView;
-        verticalViewAngle = enemy.Stats.VerticalView;
+        detectionRange = status.Stats.DetectionRange;
+        horizontalViewAngle = status.Stats.HorizontalView;
+        verticalViewAngle = status.Stats.VerticalView;
     }
 
     //自分から攻撃対象が見えてますか？

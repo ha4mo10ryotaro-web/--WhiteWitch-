@@ -10,13 +10,17 @@ public sealed class EnemyBehaviorModule :
  IEnemyAttackContext,
  IEnemyDeadContext
 {
-    
+    //privateにして、BehaviorModuleを実装しているコンテクスト達からはpublicでプロパティ化したステータスしか見れないようにする
+    private EnemyStatusModule status;
+    public EnemyStatsData Status { get; private set; }
     public EnemyMovement Movement { get; private set; }
     public EnemyPerception Perception { get; private set; }
     public EnemyCombat Combat { get; private set; }
 
     private void Awake()
     {
+        status = GetComponent<EnemyStatusModule>();
+        Status = status.Stats;
         Movement = GetComponent<EnemyMovement>();
         Perception = GetComponentInChildren<EnemyPerception>();
         Combat = GetComponent<EnemyCombat>();
