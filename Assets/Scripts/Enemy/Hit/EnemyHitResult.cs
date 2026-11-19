@@ -40,21 +40,17 @@ public readonly struct EnemyHitResult
 
     public EnemyHitResult(
         float damage,
-        float impact,
         float knockback,
         Vector3 knockbackDirection,
+        float staggeraDuration,
         CounterType counterType,
-        StaggerResult staggerResult,
-        bool shouldCancelAttack,
-        float staggerDuration)
+        StaggerResult staggerResult)
     {
         Damage = damage;
-        Impact = impact;
         Knockback = knockback;
         KnockbackDirection = knockbackDirection;
+        StaggerDuration = staggeraDuration;
         CounterType = counterType;
         StaggerResult = staggerResult;
-        ShouldCancelAttack = shouldCancelAttack;
-        StaggerDuration = staggerDuration;
     }
 }

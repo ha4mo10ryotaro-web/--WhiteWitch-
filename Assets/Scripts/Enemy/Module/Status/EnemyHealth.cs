@@ -1,6 +1,6 @@
 using UnityEngine;
 [RequireComponent(typeof(EnemyController))]
-public sealed class EnemyHealth : MonoBehaviour, IEnemyDamageReceiver
+public sealed class EnemyHealth : MonoBehaviour
 {
     private EnemyController enemy;
     private float currentHealth;
@@ -27,7 +27,7 @@ public sealed class EnemyHealth : MonoBehaviour, IEnemyDamageReceiver
         currentHealth = MaxHealth;
     }
 
-    public void ReceiveHit(EnemyHitData hitdata)
+    public void TakeDamage(float damage)
     {
         if(IsDead)
         {
@@ -35,12 +35,12 @@ public sealed class EnemyHealth : MonoBehaviour, IEnemyDamageReceiver
         }
 
         currentHealth = Mathf.Max(
-            currentHealth - hitdata.Damage,
+            currentHealth - damage,
             0f
         );
 
         Debug.Log(
-            $"{enemy.name}被弾！ {hitdata.Damage}ダメージ / " +
+            $"{enemy.name}被弾！ {damage}ダメージ / " +
             $"HP {currentHealth}/{MaxHealth}");
 
         if(IsDead)

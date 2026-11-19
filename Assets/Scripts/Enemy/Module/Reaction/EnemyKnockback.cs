@@ -8,7 +8,8 @@ public class EnemyKnockback : MonoBehaviour
 
     private float remainingDistance;
     private Vector3 direction;
-    private float speed;
+    //仮値。等速直線運動じゃなくしたい。
+    private float speed = 2.0f;
 
     private void Awake()
     {
@@ -18,11 +19,10 @@ public class EnemyKnockback : MonoBehaviour
 
     public void BeginKnockback(
         Vector3 Direction,
-        float Distance,
-        float Duration
+        float Distance
     )
     {
-        if(Distance <= 0f || Duration <= 0f)
+        if(Distance <= 0f)
         {
             return;
         }
@@ -35,8 +35,6 @@ public class EnemyKnockback : MonoBehaviour
         direction = Direction.normalized;
 
         remainingDistance = Distance;
-
-        speed = Distance / Duration;
 
         IsKnocked = true;
 

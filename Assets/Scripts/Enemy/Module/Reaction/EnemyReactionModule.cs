@@ -36,7 +36,7 @@ public sealed class EnemyReactionModule : MonoBehaviour
         behavior.Movement.Stop();
         behavior.Combat.CancelAttack();
 
-        if (stateMachine.IsCurrentState<EnemyAttackState>())
+        if (stateMachine.CurrentStateType == typeof(EnemyAttackState))
         {
             stateMachine.SwitchState<EnemyChaseState>();
         }
