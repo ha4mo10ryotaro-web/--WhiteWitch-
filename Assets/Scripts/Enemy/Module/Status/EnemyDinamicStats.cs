@@ -9,7 +9,7 @@ public class EnemyDinamicStats : MonoBehaviour
     public float BaseDefence => enemy.Stats.Defence;
     public float CurrentDefence {get; private set;}
     private float defenceMultiplier;
-    
+
     public float BaseImpactResistance => enemy.Stats.ImpactResistance;
     public float CurrentImpactResistance {get; private set;}
     private float impactResistanceMultiplier;
@@ -19,7 +19,7 @@ public class EnemyDinamicStats : MonoBehaviour
     {
         enemy = GetComponent<EnemyController>();
 
-        if(enemy.Stats = null)
+        if(enemy.Stats == null)
         {
             Debug.LogError($"{enemy.name}:ステータスデータが設定されていません");
             enabled = false;
