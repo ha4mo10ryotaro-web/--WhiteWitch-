@@ -18,16 +18,19 @@ public sealed class EnemyDamageReceiver :
     public void ReceiveHit(
         EnemyHitData hitData)
     {
+        //死んでたら攻撃を受け付けない
         if (health.IsDead)
         {
             return;
         }
 
+        //攻撃側のデータをもとに、自身のステータスで補正した最終結果のデータを作成
         EnemyHitResult result =
             hitResolver.Resolve(hitData);
 
         health.TakeDamage(result.Damage);
 
+        //死んでいたら怯みやノックバックしない
         if (health.IsDead)
         {
             return;

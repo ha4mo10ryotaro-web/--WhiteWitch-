@@ -19,9 +19,8 @@ public enum StaggerResult
 public readonly struct EnemyHitResult
 {
     public float Damage { get; }
-    public float Impact { get; }
+    
     public float Knockback { get; }
-
     public Vector3 KnockbackDirection { get; }
 
     public CounterType CounterType { get; }
@@ -33,8 +32,6 @@ public readonly struct EnemyHitResult
 
     public bool ShouldKnockback =>
         Knockback > 0f;
-
-    public bool ShouldCancelAttack { get; }
 
     public float StaggerDuration { get; }
 

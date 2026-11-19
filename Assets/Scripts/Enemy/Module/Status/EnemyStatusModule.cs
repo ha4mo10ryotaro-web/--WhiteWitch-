@@ -4,12 +4,15 @@ public sealed class EnemyStatusModule : MonoBehaviour
     private EnemyController enemy;
 
     public EnemyHealth Health { get; private set; }
+
+    public EnemyDinamicStats DynamicStats {get; private set; }
     public EnemyMixedColorStatus MixedColor { get; private set; }
     public EnemySuperResolution SuperResolution { get; private set; }
 
+    /*
     public bool IsSuperResolved =>
         SuperResolution != null &&
-        SuperResolution.IsActive;
+        SuperResolution.IsActive? : false;
 
     public float CurrentImpactResistance
     {
@@ -32,7 +35,7 @@ public sealed class EnemyStatusModule : MonoBehaviour
             return Mathf.Max(0f, value);
         }
     }
-
+    */
     private void Awake()
     {
         enemy =

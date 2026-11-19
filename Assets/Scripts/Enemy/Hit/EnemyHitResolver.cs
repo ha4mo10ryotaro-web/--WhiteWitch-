@@ -50,12 +50,12 @@ public sealed class EnemyHitResolver : MonoBehaviour
     //どのカウンター倍率を適用するの？
     private CounterType SelectCounterType ()
     {
-        //超解像時は常にパニカン判定
+        /*超解像時は常にパニカン判定。超解像を作ったら実装
         if (status.IsSuperResolved)
         {
             return CounterType.PunishCounter;
         }
-
+        */
         //現在の戦闘フェーズでカウンター判定を切り替える
         switch(behavior.Combat.CurrentPhase)
         {
