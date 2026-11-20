@@ -19,6 +19,8 @@ public sealed class PlayerAttackState : PlayerStateBase
 
     public override void Enter()
     {
+        Debug.Log("攻撃状態開始");
+
         context.Movement.Stop();
 
         completed = false;
@@ -118,6 +120,8 @@ public sealed class PlayerAttackState : PlayerStateBase
 
             StateMachine.SwitchState<PlayerNormalState>();
         }
+
+        Debug.Log("Activeフェーズ開始");
     }
 
     private void EnterRecoveryPhase()
@@ -128,6 +132,8 @@ public sealed class PlayerAttackState : PlayerStateBase
         context.Combat.SetAttackPhase(currentPhase);
 
         phaseTimer = Mathf.Max(0f, attack.RecoveryTime);
+
+        Debug.Log("Recoveryフェーズ開始");
     }
 
     private void CompleteAttack()

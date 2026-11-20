@@ -34,7 +34,7 @@ public class EnemyDynamicStats : MonoBehaviour
 
         status = statusModule;
 
-        if(statusModule == null)
+        if(statusModule.Stats == null)
         {
             Debug.LogError($"{name}:ステータスデータが設定されていません");
             enabled = false;

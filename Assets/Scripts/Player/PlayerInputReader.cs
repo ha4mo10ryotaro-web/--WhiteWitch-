@@ -29,6 +29,8 @@ public class PlayerInputReader : MonoBehaviour
         if(InputEnabled && context.performed)
         {
             attackPressed = true;
+
+            Debug.Log("攻撃入力を受理");
         }
     }
     public bool ConsumeAttackPressed()

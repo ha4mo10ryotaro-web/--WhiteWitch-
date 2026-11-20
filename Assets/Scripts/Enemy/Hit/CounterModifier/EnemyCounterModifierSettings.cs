@@ -1,9 +1,10 @@
+using System.IO.Compression;
 using UnityEngine;
 
 [CreateAssetMenu(
     fileName = "EnemyCounterModifierSet",
     menuName = "WhiteWitch/Enemy/Counter Modifier Set")]
-public sealed class EnemyCounterModifierSettings : MonoBehaviour
+public sealed class EnemyCounterModifierSettings : ScriptableObject
 {
     [field: SerializeField]
     public EnemyCounterModifierData Normal {get; private set;}

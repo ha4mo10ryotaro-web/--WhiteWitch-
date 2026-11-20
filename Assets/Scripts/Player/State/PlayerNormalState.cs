@@ -13,7 +13,7 @@ public class PlayerNormalState : PlayerStateBase
 
     public override void Enter()
     {
-
+        Debug.Log("Player:Normal状態開始");
         return;
     }
 
@@ -23,9 +23,12 @@ public class PlayerNormalState : PlayerStateBase
 
         if(context.Input.ConsumeAttackPressed())
         {
+            Debug.Log("NormalStateが攻撃受理を受け取りました");
+
             if(context.Combat.PrepareDefaultAttack())
             {
                 StateMachine.SwitchState<PlayerAttackState>();
+
             }
         }
         return;

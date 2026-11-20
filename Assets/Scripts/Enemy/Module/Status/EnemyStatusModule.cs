@@ -40,7 +40,12 @@ public sealed class EnemyStatusModule : MonoBehaviour
     */
     private void Awake()
     {
-        
+        if(Stats == null)
+        {
+            Debug.LogError($"{name}:StatsDataが設定されていません");
+            enabled = false;
+            return;
+        }
 
         DynamicStats = 
             GetComponent<EnemyDynamicStats>();

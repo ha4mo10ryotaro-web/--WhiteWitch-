@@ -9,7 +9,7 @@ public class EnemyMovement : MonoBehaviour
     private EnemyController enemy;
     private EnemyStatusModule status;
 
-    
+
     // NavMeshAgentが有効な状態で移動中かどうかを返す
     public bool IsMoving =>
         agent.isOnNavMesh && !agent.isStopped && agent.hasPath;
@@ -48,7 +48,10 @@ public class EnemyMovement : MonoBehaviour
             return;
         }
 
-        RefreshMoveSpeed();
+    }
+    private void Start()
+    {
+        RefreshMoveSpeed();    
     }
 
     public void RefreshMoveSpeed()

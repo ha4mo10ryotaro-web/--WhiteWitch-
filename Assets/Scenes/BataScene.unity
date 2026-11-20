@@ -439,9 +439,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPerception
   eyePoint: {fileID: 1917222371}
-  detectionRange: 12
-  horizontalViewAngle: 120
-  verticalViewAngle: 60
   sightMask:
     serializedVersion: 2
     m_Bits: 257
@@ -481,6 +478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa1b3559b393d1846a0b6f2902cb2b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStatusModule
+  <Stats>k__BackingField: {fileID: 11400000, guid: f7b659d110223a941a156e77a116e054, type: 2}
 --- !u!114 &668206195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -517,7 +515,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63249ef17cd54934ba3fc60b51e57b4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  <Stats>k__BackingField: {fileID: 11400000, guid: f7b659d110223a941a156e77a116e054, type: 2}
   <Target>k__BackingField: {fileID: 1602382725}
 --- !u!135 &668206198
 SphereCollider:

@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: TestEnemyStats
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStatsData
   maxHealth: 100
+  defence: 10
   moveSpeed: 3.5
-  impactResistance: 30
   weight: 1
-  wanderRadius: 8
-  wanderWaitTime: 2
+  impactResistance: 10
+  staggerDuration: 0.6
+  exploreWaitTime: 2
   detectionRange: 15
   loseTargetRange: 25
   horizontalView: 120
   verticalView: 120
+  chaseRadius: 25
   attackRange: 2.5
   attackCooldown: 1.5

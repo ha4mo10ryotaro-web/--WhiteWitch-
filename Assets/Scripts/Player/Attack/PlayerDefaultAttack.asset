@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1820585cf170aee428dfa48f06e9b926, type: 3}
   m_Name: PlayerDefaultAttack
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttackDefinition
-  baseDamage: 10
-  baseImpact: 5
+  baseDamage: 100
+  baseImpact: 50
   baseKnockback: 3
   inkCost: 5
   colorAccumulation: 10

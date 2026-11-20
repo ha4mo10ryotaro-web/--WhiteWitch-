@@ -24,6 +24,7 @@ public sealed class PlayerAttackHitbox :
             return;
         }
 
+        Debug.Log($"Player攻撃が{other.name}にHit!");
         combat.OnHit(other);
     }
 }
