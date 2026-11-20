@@ -1,5 +1,9 @@
 using UnityEngine;
-
+[RequireComponent(typeof(EnemyStateMachine))]
+[RequireComponent(typeof(EnemyBehaviorModule))]
+[RequireComponent(typeof(EnemyStatusModule))]
+[RequireComponent(typeof(EnemyStagger))]
+[RequireComponent(typeof(EnemyKnockback))]
 //反応部門の責任者。ノックバックやスタンなどの反応を管理する
 public sealed class EnemyReactionModule : MonoBehaviour
 {
@@ -23,6 +27,10 @@ public sealed class EnemyReactionModule : MonoBehaviour
         Stagger = GetComponent<EnemyStagger>();
         Knockback = GetComponent<EnemyKnockback>();
         Stun = GetComponent<EnemyStun>();
+
+        status = GetComponent<EnemyStatusModule>();
+        behavior = GetComponent<EnemyBehaviorModule>();
+        stateMachine = GetComponent<EnemyStateMachine>();
     }
 
 

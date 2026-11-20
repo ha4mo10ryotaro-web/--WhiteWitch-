@@ -19,12 +19,16 @@ public sealed class PlayerAttackHitbox :
 
     private void OnTriggerEnter(Collider other)
     {
-        if (combat == null)
+        if(other.transform.root == transform.root)
         {
             return;
         }
 
-        Debug.Log($"Player攻撃が{other.name}にHit!");
+        if (combat == null)
+        {
+            return;
+        }
+        
         combat.OnHit(other);
     }
 }

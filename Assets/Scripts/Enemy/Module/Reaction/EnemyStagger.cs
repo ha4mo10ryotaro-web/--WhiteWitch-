@@ -20,6 +20,8 @@ public class EnemyStagger : MonoBehaviour
 
     public void BeginStagger(float duration)
     {
+        Debug.Log($"{name}:怯み開始。{duration}秒");
+
         IsStaggered = true;
         staggerTimer = Mathf.Max(0f, duration);
 

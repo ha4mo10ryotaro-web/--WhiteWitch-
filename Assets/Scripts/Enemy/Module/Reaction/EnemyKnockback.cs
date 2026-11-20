@@ -32,6 +32,8 @@ public class EnemyKnockback : MonoBehaviour
         {
             return;
         }
+
+        Debug.Log($"{name}:ノックバック開始。{Distance}");
         direction = Direction.normalized;
 
         remainingDistance = Distance;

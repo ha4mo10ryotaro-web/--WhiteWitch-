@@ -80,10 +80,6 @@ public class PlayerStateMachine : MonoBehaviour
     //ついでにtypeofの記述が省略できる
     public void SwitchState<State>() where State : class, IPlayerState
     {
-        if (currentState != null)
-        {
-            return;
-        }
         SwitchState(typeof(State));
     }
 

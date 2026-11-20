@@ -103,7 +103,6 @@ public sealed class PlayerAttackState : PlayerStateBase
 
         phaseTimer = Mathf.Max(0f, attack.StartupTime);
 
-        Debug.Log($"Player: {attack.name} 攻撃開始");
     }
 
     private void EnterActivePhase()
@@ -141,8 +140,6 @@ public sealed class PlayerAttackState : PlayerStateBase
         completed = true;
 
         context.Combat.FinishAttack();
-
-        Debug.Log("Player: 攻撃終了。通常状態に戻ります");
 
         StateMachine.SwitchState<PlayerNormalState>();
     }

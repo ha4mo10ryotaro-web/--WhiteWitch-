@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c74ba7cefa59b5d4a9d4b0c7620041fe, type: 3}
   m_Name: Counter_PunishCounter
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCounterModifierData
-  <DamageMultiplier>k__BackingField: 0
-  <ImpactMultiplier>k__BackingField: 0
-  <ImpactResistanceMultiplier>k__BackingField: 0
-  <KnockbackMultiplier>k__BackingField: 0
-  <StaggerDurationMultiplier>k__BackingField: 0
+  <DamageMultiplier>k__BackingField: 2
+  <ImpactMultiplier>k__BackingField: 2
+  <ImpactResistanceMultiplier>k__BackingField: 0.25
+  <KnockbackMultiplier>k__BackingField: 2
+  <StaggerDurationMultiplier>k__BackingField: 3

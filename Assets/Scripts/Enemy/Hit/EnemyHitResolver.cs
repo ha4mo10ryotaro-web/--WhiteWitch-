@@ -43,6 +43,8 @@ public sealed class EnemyHitResolver : MonoBehaviour
         float staggerDuration = ResolveStaggerDuration(
                 staggerResult, modifier);
 
+        
+
         return new EnemyHitResult(
             appliedDamage,
             appliedKnockback,
@@ -83,7 +85,13 @@ public sealed class EnemyHitResolver : MonoBehaviour
         //ここから更に防御力補正が乗る
         float appliedDamage = damage * modifier.DamageMultiplier;
 
-        return Mathf.Max(0f, appliedDamage);
+        float DefenceRate = ResolveDefence();
+        return Mathf.Max(0f, appliedDamage * DefenceRate);
+    }
+
+    private float ResolveDefence()
+    {
+        return status.Stats.Defence * 2f / (status.Stats.Defence + status.DynamicStats.CurrentDefence);
     }
 
     //怯み判定。攻撃側の衝撃値とこちら側の衝撃値にお互いに補正を掛けた後に判定を行う

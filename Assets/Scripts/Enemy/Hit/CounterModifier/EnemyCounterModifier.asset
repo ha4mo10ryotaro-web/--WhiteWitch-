@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8571759774a11dc48b76c3eba1fc6643, type: 3}
   m_Name: EnemyCounterModifier
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCounterModifierSettings
-  <Normal>k__BackingField: {fileID: 0}
-  <Counter>k__BackingField: {fileID: 0}
-  <PunishCounter>k__BackingField: {fileID: 0}
+  <Normal>k__BackingField: {fileID: 11400000, guid: 2489b4a695cd58f4c814eb165ff97137, type: 2}
+  <Counter>k__BackingField: {fileID: 11400000, guid: 1612e4e4ae5760f4a878c62459248530, type: 2}
+  <PunishCounter>k__BackingField: {fileID: 11400000, guid: 6809986e7a4a36549b18e798649236dd, type: 2}

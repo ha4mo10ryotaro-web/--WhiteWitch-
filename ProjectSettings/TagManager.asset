@@ -14,9 +14,9 @@ TagManager:
   - 
   - Field
   - Player
-  - 
-  - 
-  - 
+  - Enemy
+  - PlayerAttackHitBox
+  - EnemyAttackHitBox
   - 
   - 
   - 

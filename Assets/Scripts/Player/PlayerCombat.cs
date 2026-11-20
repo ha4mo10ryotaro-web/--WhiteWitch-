@@ -134,11 +134,13 @@ public sealed class PlayerCombat : MonoBehaviour
     {
         if (!IsAttacking)
         {
+            Debug.LogWarning("Hitしましたが、IsAttackingがfalseです");
             return;
         }
 
         if (CurrentPhase != AttackPhase.Active)
         {
+            Debug.LogWarning("AttackPhaseがActiveではありません");
             return;
         }
 
@@ -161,6 +163,7 @@ public sealed class PlayerCombat : MonoBehaviour
 
         if (receiver == null)
         {
+            Debug.LogWarning($"{other.name}からIEnemyDamageReceiverを取得できません");
             return;
         }
 

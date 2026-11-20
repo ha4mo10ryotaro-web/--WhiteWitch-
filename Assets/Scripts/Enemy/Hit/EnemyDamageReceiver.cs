@@ -28,6 +28,14 @@ public sealed class EnemyDamageReceiver :
         EnemyHitResult result =
             hitResolver.Resolve(hitData);
 
+        Debug.Log(
+            $"HitResult: " +
+            $"Damage={result.Damage}, " +
+            $"Counter={result.CounterType}, " +
+            $"Stagger={result.StaggerResult}, " +
+            $"StaggerTime={result.StaggerDuration}, " +
+            $"Knockback={result.Knockback}");
+
         health.TakeDamage(result.Damage);
 
         //死んでいたら怯みやノックバックしない
