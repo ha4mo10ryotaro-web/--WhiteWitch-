@@ -62,7 +62,7 @@ public class EnemyDynamicStats : MonoBehaviour
     {
         defenceMultiplier += multiplierValue;
         CurrentDefence = Mathf.Max(0f,
-             (CurrentDefence + addValue) * (1f + multiplierValue));
+             (CurrentDefence + addValue) * (1f + defenceMultiplier));
         
     }
 

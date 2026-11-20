@@ -7,6 +7,11 @@ public sealed class EnemyHitResolver : MonoBehaviour
     private EnemyStatusModule status;
     [SerializeField]
     private EnemyCounterModifierSettings modifierSettings;
+    
+    [SerializeField, Min(1f)]
+    private float heavyStaggerBorderline = 1.5f;
+    [SerializeField, Min(1f)]
+    private float heavyStaggerMultiplier = 2.0f;
 
     private void Awake()
     {
@@ -33,10 +38,10 @@ public sealed class EnemyHitResolver : MonoBehaviour
                 hitData.Impact,modifier);
 
         float appliedKnockback = ResolveKnockback(
-                hitData.Knockback,modifier);
+                hitData.Knockback, staggerResult, modifier);
 
         float staggerDuration = ResolveStaggerDuration(
-                modifier);
+                staggerResult, modifier);
 
         return new EnemyHitResult(
             appliedDamage,
@@ -84,6 +89,8 @@ public sealed class EnemyHitResolver : MonoBehaviour
     //怯み判定。攻撃側の衝撃値とこちら側の衝撃値にお互いに補正を掛けた後に判定を行う
     private StaggerResult ResolveStagger(float incomingImpact, EnemyCounterModifierData counterModifier)
     {
+        //今後はスーパーアーマー判定を入れる
+
         float effectiveImpact =
             incomingImpact * counterModifier.ImpactMultiplier;
 
@@ -92,7 +99,41 @@ public sealed class EnemyHitResolver : MonoBehaviour
                 status.DynamicStats.CurrentImpactResistance,
                 counterModifier.ImpactResistanceMultiplier);
 
-        return StaggerResult.None;
+        if(effectiveResistance <= 0f)
+        {
+            return StaggerResult.Guaranteed;
+        }
+        
+        if(effectiveImpact <= 0f)
+        {
+            return StaggerResult.Failed;
+        }
+
+        float impactRate = effectiveImpact / effectiveResistance;
+        if(impactRate >= heavyStaggerBorderline)
+        {
+            return StaggerResult.Heavy;
+        }
+
+        double successRate = ( Mathf.Pow((effectiveImpact / effectiveResistance), 3) - 0.1) / 0.9;
+
+        if(successRate <= 0)
+        {
+            return StaggerResult.Failed;
+        }
+
+        if(successRate >= 1)
+        {
+            return StaggerResult.Guaranteed;
+        }
+        else if(successRate > Random.value)
+        {
+            return StaggerResult.ChanceSuccess;
+        }
+        else
+        {
+            return StaggerResult.Failed;
+        }
     }
 
     private float ResolveImpactResistance(float resistance, float multiplyer)
@@ -101,16 +142,40 @@ public sealed class EnemyHitResolver : MonoBehaviour
         return resistance * multiplyer;
     }
 
-    private float ResolveKnockback (float knockback, EnemyCounterModifierData modifier)
+    private float ResolveKnockback (float knockback, StaggerResult staggerResult, EnemyCounterModifierData modifier)
     {
-        //重さによる具体的なノックバック距離の計算式は未定
-        //staggerResultによる強怯みも後々？
-        return knockback / status.Stats.Weight * modifier.KnockbackMultiplier;
+        if (staggerResult == StaggerResult.None ||
+        staggerResult == StaggerResult.Failed)
+        {
+            return 0f;
+        }
+
+        float Weight = Mathf.Max(0.01f, status.Stats.Weight);
+        float appliedknockback =
+            knockback / Weight * modifier.KnockbackMultiplier;
+
+        if (staggerResult == StaggerResult.Heavy)
+        {
+            appliedknockback *= heavyStaggerMultiplier;
+        }
+
+        return  Mathf.Max(0f, appliedknockback);
     }
 
-    private float ResolveStaggerDuration(EnemyCounterModifierData modifier)
+    private float ResolveStaggerDuration(StaggerResult staggerResult, EnemyCounterModifierData modifier)
     {
-        //staggerResultによる強怯みも後々？
-        return 1 * modifier.StaggerDurationMultiplier;
+        if (staggerResult == StaggerResult.None ||
+            staggerResult == StaggerResult.Failed)
+        {
+            return 0f;
+        }
+
+        float duration = status.Stats.StaggerDuration * modifier.StaggerDurationMultiplier;
+
+        if (staggerResult == StaggerResult.Heavy)
+        {
+            duration *= heavyStaggerMultiplier;
+        }
+        return Mathf.Max(0f, duration);
     }
 }

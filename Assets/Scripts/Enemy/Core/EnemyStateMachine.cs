@@ -1,8 +1,6 @@
 using System;//Type使うため
 using UnityEngine;
 using System.Collections.Generic;
-using System.Buffers;
-
 
 //このスクリプトをGameObjにアタッチする時、指定したコンポーネント（エネミーコントローラー）を要求する
 //コンポーネントがGameObjにアタッチされてなければ自動で追加する
@@ -103,7 +101,6 @@ public class EnemyStateMachine : MonoBehaviour
         currentState.Enter();
 
     }
-
 
 
 

@@ -40,10 +40,12 @@ public sealed class EnemyStatusModule : MonoBehaviour
     */
     private void Awake()
     {
+        
+
         DynamicStats = 
             GetComponent<EnemyDynamicStats>();
-            
-        DynamicStats.Initialize();
+
+        DynamicStats.Initialize(this);
 
         Health =
             GetComponent<EnemyHealth>();
